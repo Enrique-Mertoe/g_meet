@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@eslint/eslintrc": "^3.3.1",
     "lucide-react": "^0.484.0",
     "mediasoup-client": "^3.9.5",
     "next": "15.2.4",

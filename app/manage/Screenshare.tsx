@@ -1,37 +1,62 @@
-import { useEffect, useState } from "react";
-import io from "socket.io-client";
-import mediasoupClient from "mediasoup-client";
+// screenShareManager.ts
+class ScreenShareManager {
+    private stream: MediaStream | null = null;
+    private listeners: ((isActive: boolean) => void)[] = [];
+    public ac: boolean = false
 
-const ScreenShare = () => {
-    const [socket, setSocket] = useState(null);
-    const [screenStream, setScreenStream] = useState(null);
+    start(callback: (stream: MediaStream | null) => void) {
+        this._start().then(() => {
+            callback(this.stream)
+        })
+    }
 
-    useEffect(() => {
-        const newSocket = io("http://localhost:4000");
-        newSocket.on("routerRtpCapabilities", (capabilities) => {
-            console.log("Mediasoup Capabilities:", capabilities);
+    private async _start() {
+        if (this.stream) return;
+
+        try {
+            this.stream = await navigator.mediaDevices.getDisplayMedia({video: true});
+
+            this.notifyListeners(true);
+            this.stream.getVideoTracks()[0].onended = () => this.stop();
+        } catch (error) {
+            console.error("Error starting screen share:", error);
+        }
+    }
+
+    stop() {
+
+        if (this.stream) {
+            this.stream.getTracks().forEach(track => track.stop());
+            this.stream = null;
+            this.notifyListeners(false);
+        }
+        navigator.mediaDevices.getUserMedia({video: true}).then(media => {
+            media.getTracks().forEach(track => track.stop());
         });
-        setSocket(newSocket);
-    }, []);
 
-    const startScreenShare = async () => {
-        const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-        setScreenStream(stream);
-        console.log("Sharing Screen...");
-    };
+        return this;
+    }
 
-    const stopScreenShare = () => {
-        screenStream?.getTracks().forEach((track) => track.stop());
-        setScreenStream(null);
-        console.log("Stopped Sharing.");
-    };
+    getStream() {
+        return this.stream;
+    }
 
-    return (
-        <div>
-            <button onClick={startScreenShare}>Start Screen Share</button>
-            <button onClick={stopScreenShare} disabled={!screenStream}>Stop Screen Share</button>
-        </div>
-    );
-};
+    isSharing() {
+        return this.stream !== null;
+    }
 
-export default ScreenShare;
+    // Listener management
+    addListener(callback: (isActive: boolean) => void) {
+        this.listeners.push(callback);
+    }
+
+    removeListener(callback: (isActive: boolean) => void) {
+        this.listeners = this.listeners.filter(listener => listener !== callback);
+    }
+
+    private notifyListeners(isActive: boolean) {
+        this.listeners.forEach(callback => callback(isActive));
+    }
+}
+
+export const sSm = new ScreenShareManager();

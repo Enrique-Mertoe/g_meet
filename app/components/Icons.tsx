@@ -9,7 +9,7 @@ import {
     Smile,
     Users,
     Video,
-    VideoOff, Phone, ChevronUp, Hand
+    VideoOff, Phone, ChevronUp, Hand, Square, Pause, Play, AlertTriangle, CheckCircle, Info, AlertCircle, HelpCircle
 
 } from "lucide-react";
 import React from "react";
@@ -25,9 +25,11 @@ const ICONS: Record<string, LucideIcon> = {
     Smile,
     MoreVertical,
     PhoneOff,
+    AlertCircle, Info, CheckCircle, AlertTriangle,
     Phone,
-    ChevronUp,
-    Hand
+    ChevronUp,HelpCircle,
+    Hand,
+    Square, Pause, Play,
 };
 
 interface IconProps {

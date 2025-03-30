@@ -8,14 +8,21 @@ interface GCardProps {
     type?: "user" | "presentation";
     info: UserInfo | PresentationInfo;
     gradient?: boolean;
+    className?: string;
 }
 
-const GCard: React.FC<GCardProps> = ({gradient, type, info, ...rest}) => {
+const GCard: React.FC<GCardProps> = ({
+                                         gradient,
+                                         type,
+                                         info,
+                                         className,
+                                         ...rest
+                                     }) => {
     return (
         <>
-            <div className={`w-auto aspect-square`}>
+            <div className={`duration-300 ease-out transform asp ect-square ${className}`}>
                 <Card
-                    className={`aspect-square h-100 ${gradient ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white" : "bg-white"}`}>
+                    className={`aspect-[1.5/1] h-full w-full bg-[#8e918f]`}>
                     {type === "user" ? (
                         <UserView info={info as UserInfo}/>
                     ) : (
@@ -47,7 +54,7 @@ const UserView: React.FC<{ info: UserInfo }> = ({info}) => {
                         alt={info.name}
                         width={100}
                         height={100}
-                        className="rounded-full border-4 border-white"
+                        className="rounded-full w-[60px] h-[60px] aspect-square border-4 border-white"
                     />
                 </div>
 
