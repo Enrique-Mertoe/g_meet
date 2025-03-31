@@ -97,6 +97,36 @@ const ControlItem: React.FC<ControlItemProps<boolean>> = React.memo(({
     );
 });
 
+const TimeDisplay = () => {
+    const [time, setTime] = useState("");
+
+    useEffect(() => {
+        const updateTime = () => {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const ampm = hours >= 12 ? "PM" : "AM";
+            hours = hours % 12 || 12;
+
+            setTime(`${hours}:${minutes.toString().padStart(2, "0")} ${seconds.toString().padStart(2, "0")} ${ampm}`);
+        };
+
+        updateTime(); // Set initial time
+        const interval = setInterval(updateTime, 1000); // Update every second
+
+        return () => clearInterval(interval); // Cleanup on unmount
+    }, []);
+
+    return (
+        <div className="hstack transition-all duration-300 gap-3">
+            <span>{time}</span>
+            <span>|</span>
+            <span>Meeting ID</span>
+        </div>
+    );
+};
+
 const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
     const [isSharing, setIsSharing] = useState(false);
     const callback = useRef<(state: boolean) => void>(null);
@@ -130,9 +160,13 @@ const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
     }, []);
 
     return (
-        <div className="fixed right-0 left-0 bottom-0 pb-3">
+        <div className="fixed z-5 right-0 left-0 bottom-0 pb-3">
             <div className="w-full flex justify-center items-center">
-                <div className="w-auto gap-4 bg-dark rounded-full p-2 flex justify-center items-center">
+                <div
+                    className="w-auto me-auto ms-6 gap-4 text-white font-bold bg-dark rounded-full p-2 flex justify-center items-center">
+                    <TimeDisplay/>
+                </div>
+                <div className="w-auto gap-4 bg-dark me-auto rounded-full p-2 flex justify-center items-center">
                     <ControlItem
                         extra={<></>}
                         icon="mic|mic-off"
@@ -174,8 +208,9 @@ const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
                     }}/>
                     <ControlItem colors="#333537" icon="message-circle"/>
                     <ControlItem className="px-1" colors="#333537" icon="more-vertical"/>
-                    <ControlItem className="px-5" colors="red|red" icon="phone"/>
+                    <ControlItem className="px-5" colors="#df463e|#df463e" icon="phone"/>
                 </div>
+                <div className="ms-auto"></div>
             </div>
         </div>
     );

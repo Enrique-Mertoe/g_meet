@@ -7,26 +7,15 @@ import Alert from "@/app/components/ui/Alert";
 
 
 interface VScreenProps {
-    items?: number
     children?: ReactNode;
 }
-
-const gridClassMap: { [key: number]: string } = {
-    1: "grid-cols-1",
-    2: "grid-cols-2",
-    3: "grid-cols-3",
-    4: "grid-cols-4",
-    5: "grid-cols-5",
-    6: "grid-cols-6"
-};
 const UList: React.FC<VScreenProps> = React.memo(({
-                                                      items = 4,
                                                       children
                                                   }: VScreenProps) => {
     return (
         <>
             <div className="grow w-full h-full">
-                <div className={`grid ${gridClassMap[items] || "grid-cols-4"} gap-1`}>
+                <div className={`w-full h-full`}>
                     {children}
 
                 </div>
@@ -92,7 +81,7 @@ const PScreen: React.FC<{
 
                             <div className="ms-auto hstack gap-2">
                                 <div className={"text-green-500"}>
-                                    <button className="hstack cursor-pointer btn gap-1">
+                                    <button className="hstack cursor-pointer hover:bg-gray-100 rounded-sm transitoion-all p-1 duration-150 gap-1">
                                         <GIcon name={"pause"} color={"text-green-500"} size={16}/>
                                     </button>
                                 </div>
@@ -105,7 +94,7 @@ const PScreen: React.FC<{
                                                 });
                                             })
                                         }}
-                                        className="hstack cursor-pointer btn gap-1">
+                                        className="hstack cursor-pointer py-2 gap-1">
                                         <GIcon name={"square"} color={"fill-red-400 text-white"} size={16}/>
 
                                         <span className={"whitespace-nowrap text-xs"}>Stop sharing</span>
@@ -155,6 +144,13 @@ const EndScreen: React.FC<{
             }
         }
     };
+    useEffect(() => {
+        listener(ev);
+        SignalBox.on("screenShare", handleScreenShare);
+        return () => {
+            SignalBox.off("screenShare", handleScreenShare);
+        };
+    }, []);
 
 
     return (

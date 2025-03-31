@@ -1,4 +1,4 @@
-import React from "react";
+import React, {CSSProperties} from "react";
 import Card from "@/app/components/widgets/Card";
 import Image from "next/image";
 import {Mic, MicOff} from "lucide-react";
@@ -9,6 +9,7 @@ interface GCardProps {
     info: UserInfo | PresentationInfo;
     gradient?: boolean;
     className?: string;
+    style?: CSSProperties
 }
 
 const GCard: React.FC<GCardProps> = ({
@@ -16,13 +17,14 @@ const GCard: React.FC<GCardProps> = ({
                                          type,
                                          info,
                                          className,
+                                         style,
                                          ...rest
                                      }) => {
     return (
         <>
-            <div className={`duration-300 ease-out transform asp ect-square ${className}`}>
+            <div className={`duration-300 ease-out transform transition-all ${className}`} style={style}>
                 <Card
-                    className={`aspect-[1.5/1] h-full w-full bg-[#8e918f]`}>
+                    className={`aspect-[1.5/1] h-full w-full bg-[#3c4043]`}>
                     {type === "user" ? (
                         <UserView info={info as UserInfo}/>
                     ) : (
@@ -41,11 +43,11 @@ const UserView: React.FC<{ info: UserInfo }> = ({info}) => {
         <>
             <div className="flex flex-col items-center justify-center h-full">
                 {/* Avatar with Ripple Effect if speaking */}
-                <div className="relative isolate flex items-center justify-center">
+                <div className="relative h-[50%] aspect-square isolate flex items-center justify-center">
                     {/* Ping Effect */}
                     {info.isSpeaking && (
                         <div
-                            className="absolute z-[-1] w-[70%] h-[70%] rounded-full bg-blue-500 animate-ping opacity-75"></div>
+                            className="absolute z-[-1] w-[60%] h-[60%] rounded-full bg-blue-600 animate-ping opacity-100"></div>
                     )}
 
                     {/* Avatar */}
@@ -54,13 +56,13 @@ const UserView: React.FC<{ info: UserInfo }> = ({info}) => {
                         alt={info.name}
                         width={100}
                         height={100}
-                        className="rounded-full w-[60px] h-[60px] aspect-square border-4 border-white"
+                        className="rounded-full w-full h-full aspect-square border-4 border-white"
                     />
                 </div>
 
 
                 {/* Username */}
-                <h2 className="mt-3 text-lg font-black text-gray-800">{info.name}</h2>
+                <h2 className="mt-3 text-lg font-black text-gray-100">{info.name}</h2>
 
                 {/* Mic Status */}
                 <div className="mt-2">
