@@ -23,6 +23,7 @@
     --font-mono: var(--font-geist-mono);
     --color-dark: rgb(32, 33, 36);
     --color-dark2: rgb(48, 48, 53);
+    --color-red1: #df463e;
 }
 
 @media (prefers-color-scheme: dark) {

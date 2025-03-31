@@ -25,17 +25,20 @@ interface ControlItemProps<T = any> {
     onAction?: (event: CEvent<T>) => void;
     className?: string;
     onToggle?: (event: CEvent<T>) => void;
+    design?: string
 }
 
-const ControlItem: React.FC<ControlItemProps<boolean>> = React.memo(({
-                                                                         icon,
-                                                                         isActive = false,
-                                                                         extra,
-                                                                         onAction,
-                                                                         colors,
-                                                                         className,
-                                                                         onToggle
-                                                                     }) => {
+const ControlItem: React.FC<ControlItemProps<boolean> & React.HTMLAttributes<HTMLElement>> = React.memo(({
+                                                                                                             icon,
+                                                                                                             isActive = false,
+                                                                                                             extra,
+                                                                                                             onAction,
+                                                                                                             colors,
+                                                                                                             className,
+                                                                                                             onToggle,
+                                                                                                             design,
+                                                                                                             ...rest
+                                                                                                         }) => {
     const [inActiveState, setInActiveState] = useState(isActive);
 
     const [icon1, icon2] = icon.split("|");
@@ -71,27 +74,37 @@ const ControlItem: React.FC<ControlItemProps<boolean>> = React.memo(({
     }, [onAction, onToggle, inActiveState, toggleState]);
 
     const [activeColor, inActiveColor] = (states => {
-            let st = states.split("|");
-            return st.length > 1 ? st : [st[0], "#333537"]
+            let st = states.split("|", 2);
+            return st.length > 1 ? st : [st[0], "bg-[#333537]"]
         }
-    )(colors || "#333537")
-    const bgColor = (inActiveState ? activeColor : inActiveColor);
-    const lightBg = lighten(0.7, bgColor);
-    const textColor = darken(0.4, bgColor);
+    )(colors || "bg-transparent")
+    const [bgColor, setBgColor] = useState<string>("");
+
+    useEffect(() => {
+        setBgColor(() => inActiveState ? activeColor : inActiveColor)
+    }, [inActiveState]);
+
+    const extractTextColor = (classStr: string) => {
+        const match = classStr.match(/text-([a-zA-Z0-9]+)/);
+        return match ? `text-${match[1]}` : "text-white"; // Returns "text-color" if found, otherwise empty
+    };
+
+// Example usage:
+    const textColor = extractTextColor(bgColor);
 
     return (
-        <div className="bg-gray-200 bg-opacity-20 cursor-pointer flex p-[1px] rounded-full">
+        <div className="cursor-pointer flex p-0 rounded-full">
             {extra && (
-                <div className={`rounded-l-full p-2 bg-[${lightBg}] ${className}`} style={{backgroundColor: lightBg}}>
-                    <GIcon name="chevron-up" color={`text-${textColor}`} size={26}/>
+                <div className={`rounded-l-full py-3 ps-2 bg-[#333537] ${className}`}>
+                    <GIcon name="chevron-up" color={`text-white`} size={26}/>
                 </div>
             )}
             <div
-                className={`${extra ? "rounded-r-full" : "rounded-full"} p-2 ${className}`}
-                style={{backgroundColor: bgColor}}
+                className={`${extra ? "rounded-r-full" : "rounded-full"} p-3 ${bgColor} ${className} transition-all duration-150`}
                 onClick={handleClick}
+                {...rest}
             >
-                <GIcon name={vIcon} size={26}/>
+                <GIcon name={vIcon} color={textColor} size={26}/>
             </div>
         </div>
     );
@@ -166,19 +179,19 @@ const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
                     className="w-auto me-auto ms-6 gap-4 text-white font-bold bg-dark rounded-full p-2 flex justify-center items-center">
                     <TimeDisplay/>
                 </div>
-                <div className="w-auto gap-4 bg-dark me-auto rounded-full p-2 flex justify-center items-center">
+                <div className="mx-auto gap-4 bg-dark me-auto rounded-full p-2 flex justify-center items-center">
                     <ControlItem
                         extra={<></>}
                         icon="mic|mic-off"
                         isActive={true}
-                        colors={"#00a845|#410e0b"}
+                        colors={"bg-[#333537] text[#601410] | bg-[#f9dedcaa] text-[#601410]"}
                         onToggle={(ev) => {
 
                         }}
                     />
                     <ControlItem
                         extra={<></>}
-                        colors={"#00a845|#410e0b"}
+                        colors={"bg-[#333537] text[#601410] | bg-[#f9dedcaa] text-[#601410]"}
                         isActive={true}
                         icon="video|video-off"
                         onToggle={(ev) => {
@@ -194,26 +207,44 @@ const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
                             toggleScreenShare((state) => e.active(state)).then();
                         }}
                         isActive={false}
-                        colors="#a8c7fa|gray"
+                        colors="bg-[#a8c7fa]"
                         icon="screen-share"
                     />
-                    <ControlItem colors="#a8c7fa" icon="hand" onToggle={(e) => {
+                    <ControlItem colors="bg-[#a8c7fa]" icon="hand" onToggle={(e) => {
                         Alert.confirm("Quit", handler => {
                             handler.positiveFeedback("yes", () => {
-                                alert("ok")
                             });
                             handler.negativeFeedback("No")
                         });
-                        Alert.info("mica")
                     }}/>
                     <ControlItem colors="#333537" icon="message-circle"/>
                     <ControlItem className="px-1" colors="#333537" icon="more-vertical"/>
-                    <ControlItem className="px-5" colors="#df463e|#df463e" icon="phone"/>
+                    <ControlItem className="px-5" isActive={true}
+                                 colors="bg-[#dc362e] hover:bg-[#df463e]|bg-[#dc362e] hover:bg-[#df463e]" icon="phone"/>
                 </div>
-                <div className="ms-auto"></div>
+                <div className="ms-auto">
+                    <DetailView/>
+                </div>
             </div>
         </div>
     );
 });
+
+
+const DetailView = () => {
+
+    return (
+        <>
+            <div className="w-auto gap-4 bg-dark pe-3 ms-auto rounded-full p-2 flex justify-center items-center">
+                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="info"/>
+                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="message-square-text"/>
+                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="users"/>
+                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="shapes"/>
+                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="lock-person"/>
+            </div>
+
+        </>
+    );
+}
 
 export default GControl;
