@@ -53,18 +53,23 @@ const DetailScreen: React.FC = () => {
             <div
                 className={`relative flex-none transition-all duration-300 h-full p-2 pb-7  ${isOpen ? "w-96" : "w-0 px-0"} ${!visible && "hidden"}`}>
                 <div className="rounded-sm bg-white w-full h-full">
-                    <div className="hstack border-b-1 p-3">
-                        <span ref={titleRef} className={"font-bold text-gray-600"}>Activities</span>
-                        <div className="ms-auto">
-                            <Button icon={<GIcon name={"x"} color={"text-gray-900"}/>}
-                                    className={"aspect-square !rounded-full !p-2"}
-                                    onClick={() => sdM.mode("off")}
-                            />
+                    {
+                        isOpen &&
+                        <div className="">
+                            <div className="hstack border-b-1 p-3">
+                                <span ref={titleRef} className={"font-bold text-gray-600"}>Activities</span>
+                                <div className="ms-auto">
+                                    <Button icon={<GIcon name={"x"} color={"text-gray-900"}/>}
+                                            className={"aspect-square !rounded-full !p-2"}
+                                            onClick={() => sdM.mode("off")}
+                                    />
+                                </div>
+                            </div>
+                            <div className="vstack">
+                                {content}
+                            </div>
                         </div>
-                    </div>
-                    <div className="vstack">
-                        {content}
-                    </div>
+                    }
                 </div>
             </div>
         </>

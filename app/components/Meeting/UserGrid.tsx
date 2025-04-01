@@ -125,7 +125,7 @@ const UserGrid: React.FC<UserGridProps> = ({
             className={`z-2 duration-200 top-0 w-full h-full transition-all relative ease-out`}
         >
             <div className="relative w-full h-full">
-                <p className={"text-white z-3 relative"}>dsfsd</p>
+                {/*<p className={"text-white z-3 relative"}>dsfsd</p>*/}
                 {ready && <UList>
                     <div className={`grid rounded  ${gCols[gridCols]} ${gRows[gridRows]} p-3 w-full h-full`}>
                         {itemsToShow.map((user, index) => {
