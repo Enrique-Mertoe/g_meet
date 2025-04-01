@@ -4,6 +4,7 @@ import {PScreen, PSEvent, UList} from "@/app/components/Containers";
 import GCard from "@/app/components/GCard";
 import GControl from "@/app/components/GControl";
 import Alert from "@/app/components/ui/Alert";
+import DetailScreen from "@/app/components/ui/elements/DetailScreen";
 
 const GContainer: React.FC<{ children: React.ReactNode }> = ({children}) => {
     return (
@@ -281,10 +282,10 @@ const ContainerContent: React.FC = ({}) => {
 
             <div className={"vstack bg-[rgb(32_33_36)] gap-1 "}>
 
-                <div className={""}>
+                <div className={"flex"}>
                     <div
                         ref={parentRef}
-                        className="relative w-full h-[95vh]">
+                        className="relative grow  h-[95vh]">
                         <div
                             ref={screenRef}
                             className={`transition-all w-0 h-0  absolute duration-300 ease-out
@@ -326,37 +327,11 @@ const ContainerContent: React.FC = ({}) => {
                                 </UList>}
                             </div>
                         </div>
-                        <div
-                            className={`absolute hidden md:relative top-0 right-0 md:static bg-blue-100 h-full flex-grow 
-         ${isOpen ? "md:w-3/12 w-full" : "w-full"} transition-all duration-300 ease-out`}>
-                            {ready && <UList>
-                                {itemsToShow.map((user, index) => {
-                                    user = {...user, name: `${user.name}-${index}`};
-                                    return (
-                                        <GCard
-                                            info={user}
-                                            type={"user"}
-                                            className={`${user.name} user-${index}`}
-                                            key={index}
-                                            style={{
-                                                position: 'absolute',
-                                                top: `${padding + Math.floor(index / itemsPerRow) * (itemSize.height + gap)}px`,
-                                                left: `${padding + (index % itemsPerRow) * (itemSize.width + gap)}px`,
-                                                width: `${itemSize.width}px`,
-                                                height: `${itemSize.height}px`,
-                                            }}
-                                        />
-                                    );
-                                })}
-                                {showMore && (
-                                    <div className="more-items-card hidden">
-                                        <GCard type="presentation" info={presentationDetails}/>
-                                    </div>
-                                )}
-                            </UList>}
-                        </div>
 
                     </div>
+
+
+                    <DetailScreen/>
                 </div>
                 <GControl/>
             </div>

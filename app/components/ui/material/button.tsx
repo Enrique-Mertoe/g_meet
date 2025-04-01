@@ -7,6 +7,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button: React.FC<{
     text?: string;
+    icon?: React.ReactNode;
     design?:
         "primary" |
         "light" |
@@ -30,7 +31,7 @@ const Button: React.FC<{
         "danger-soft" | "light-soft" | "dark-soft";
     className?: string;
 
-} & React.ButtonHTMLAttributes<HTMLButtonElement>> = ({text, design = "light", className, ...rest}) => {
+} & React.ButtonHTMLAttributes<HTMLButtonElement>> = ({text, icon, design = "light", className, ...rest}) => {
     const buttonStyles = {
         primary: "bg-green-500 text-white border border-green-500 hover:bg-green-600 hover:border-green-600",
         light: "bg-gray-100 text-black border border-gray-100 hover:bg-gray-300 hover:border-gray-400",
@@ -67,13 +68,19 @@ const Button: React.FC<{
         "outline-dark": "bg-transparent text-gray-800 border border-gray-800 hover:bg-gray-800 hover:text-white hover:border-gray-800",
         link: "bg-transparent text-blue-500 border border-transparent hover:bg-transparent hover:text-blue-700",
     };
+    let Icon = () => {
+        return <>{icon}</>
+    }
 
     return (
         <button
             className={`px-4 py-[0.1rem] cursor-pointer rounded-sm font-semibold transition-all ${buttonStyles[design]} ${className}`}
             {...rest}
         >
-            {text}
+            {
+                icon && <Icon/>
+            }
+            {text && text}
         </button>
     );
 };

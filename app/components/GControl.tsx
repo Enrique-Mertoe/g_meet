@@ -5,6 +5,7 @@ import {lighten, darken} from "polished";
 import SignalBox from "@/app/manage/SignalBox";
 import {sSm} from "@/app/manage/Screenshare";
 import Alert from "@/app/components/ui/Alert";
+import {sdM} from "@/app/components/ui/elements/DetailScreen";
 
 interface ControlParams {
     mute?: boolean;
@@ -233,10 +234,17 @@ const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
 
 const DetailView = () => {
 
+    const handleClick = useCallback(() => {
+        sdM.mode(sdM.mode() == "off" ? "on" : "off");
+
+    }, [])
+
     return (
         <>
             <div className="w-auto gap-4 bg-dark pe-3 ms-auto rounded-full p-2 flex justify-center items-center">
-                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="info"/>
+                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="info"
+                             onClick={handleClick}
+                />
                 <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="message-square-text"/>
                 <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="users"/>
                 <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="shapes"/>
