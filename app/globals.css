@@ -830,14 +830,39 @@ body {
         flex: 0 0 auto;
         width: 25%;
     }
+
     .col-md-9 {
-    -webkit-box-flex: 0;
+        -webkit-box-flex: 0;
         -ms-flex: 0 0 auto;
-            flex: 0 0 auto;
-    width: 75%;
-  }
+        flex: 0 0 auto;
+        width: 75%;
+    }
 }
 
 .hold-transition > * {
-    transition: none!important;
+    transition: none !important;
+}
+
+.tooltip {
+
+}
+
+.tooltip .tooltip-inner {
+    position: relative;
+}
+
+.tooltip .tooltip-inner::before {
+    position: absolute;
+    content: "";
+    width: 15px;
+    height: 15px;
+    background: red;
+}
+
+.tooltip.top .tooltip-inner::before {
+    /*margin-bottom: -2.5px;*/
+    left: 50%;
+    top: 100%;
+    transform: translate(-100%, -50%);
+
 }

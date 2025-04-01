@@ -22,9 +22,9 @@ const GCard: React.FC<GCardProps> = ({
                                      }) => {
     return (
         <>
-            <div className={`duration-300 ease-out transform transition-all ${className}`} style={style}>
+            <div className={`duration-300 ease-out h-full w-full transform transition-all ${className}`} style={style}>
                 <Card
-                    className={`aspect-[1.5/1] h-full w-full bg-[#3c4043]`}>
+                    className={`h-full w-full bg-[#3c4043]`}>
                     {type === "user" ? (
                         <UserView info={info as UserInfo}/>
                     ) : (

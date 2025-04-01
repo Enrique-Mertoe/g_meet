@@ -5,11 +5,12 @@ import GCard from "@/app/components/GCard";
 import GControl from "@/app/components/GControl";
 import Alert from "@/app/components/ui/Alert";
 import DetailScreen from "@/app/components/ui/elements/DetailScreen";
+import UserGrid from "@/app/components/Meeting/UserGrid";
 
-const GContainer: React.FC<{ children: React.ReactNode }> = ({children}) => {
+const ComponentWrapper: React.FC<{ children: React.ReactNode }> = ({children}) => {
     return (
         <>
-            <div className="h-[100vh] w-[100vw] overflow-hidden">
+            <div className="h-full w-full overflow-hidden">
                 <div className="flex h-full w-full  flex-col gap-0">
                     {children}
                 </div>
@@ -19,9 +20,9 @@ const GContainer: React.FC<{ children: React.ReactNode }> = ({children}) => {
     )
 }
 
-export default GContainer;
+export default ComponentWrapper;
 
-const ContainerContent: React.FC = ({}) => {
+const MainContent: React.FC = ({}) => {
 
     const userDetails = [
             {
@@ -268,9 +269,17 @@ const ContainerContent: React.FC = ({}) => {
     useEffect(() => {
         const handleResize = () => attempt();
         window.addEventListener("resize", handleResize);
-        handleResize()
+        handleResize();
+        const observer = new ResizeObserver(() => {
+            handleResize();
+        });
+        parentRef.current &&
+        observer.observe(parentRef.current);
+
 
         return () => {
+            parentRef.current &&
+            observer.unobserve(parentRef.current);
             window.removeEventListener("resize", handleResize);
         };
     }, [isOpen]);
@@ -280,12 +289,12 @@ const ContainerContent: React.FC = ({}) => {
     return (
         <>
 
-            <div className={"vstack bg-[rgb(32_33_36)] gap-1 "}>
+            <div className={"vstack h-full bg-[rgb(32_33_36)] w-full gap-1 "}>
 
-                <div className={"flex"}>
+                <div className={"flex h-full"}>
                     <div
                         ref={parentRef}
-                        className="relative grow  h-[95vh]">
+                        className="relative grow pb-[7rem] h-full">
                         <div
                             ref={screenRef}
                             className={`transition-all w-0 h-0  absolute duration-300 ease-out
@@ -294,39 +303,41 @@ const ContainerContent: React.FC = ({}) => {
                             <PScreen listener={(ev: PSEvent) => ev.on("action", event)}/>
                         </div>
 
+                        <UserGrid items={userDetails} presentationDetails={presentationDetails}/>
+
                         {/* Sidebar */}
-                        <div
-                            ref={containerRef}
-                            className={`z-2 duration-200 top-0 w-full transition-all absolute ease-out`}
-                        >
-                            <div className="relative w-full h-full">
-                                {ready && <UList>
-                                    {itemsToShow.map((user, index) => {
-                                        user = {...user, name: `${user.name}-${index}`};
-                                        return (
-                                            <GCard
-                                                info={user}
-                                                type={"user"}
-                                                className={`${user.name} user-${index}`}
-                                                key={index}
-                                                style={{
-                                                    position: 'absolute',
-                                                    top: `${padding + Math.floor(index / itemsPerRow) * (itemSize.height + gap)}px`,
-                                                    left: `${padding + (index % itemsPerRow) * (itemSize.width + gap)}px`,
-                                                    width: `${itemSize.width}px`,
-                                                    height: `${itemSize.height}px`,
-                                                }}
-                                            />
-                                        );
-                                    })}
-                                    {showMore && (
-                                        <div className="more-items-card hidden">
-                                            <GCard type="presentation" info={presentationDetails}/>
-                                        </div>
-                                    )}
-                                </UList>}
-                            </div>
-                        </div>
+                        {/*<div*/}
+                        {/*    ref={containerRef}*/}
+                        {/*    className={`z-2 duration-200 top-0 w-full transition-all absolute ease-out`}*/}
+                        {/*>*/}
+                        {/*    <div className="relative w-full h-full">*/}
+                        {/*        {ready && <UList>*/}
+                        {/*            {itemsToShow.map((user, index) => {*/}
+                        {/*                user = {...user, name: `${user.name}-${index}`};*/}
+                        {/*                return (*/}
+                        {/*                    <GCard*/}
+                        {/*                        info={user}*/}
+                        {/*                        type={"user"}*/}
+                        {/*                        className={`${user.name} user-${index}`}*/}
+                        {/*                        key={index}*/}
+                        {/*                        style={{*/}
+                        {/*                            position: 'absolute',*/}
+                        {/*                            top: `${padding + Math.floor(index / itemsPerRow) * (itemSize.height + gap)}px`,*/}
+                        {/*                            left: `${padding + (index % itemsPerRow) * (itemSize.width + gap)}px`,*/}
+                        {/*                            width: `${itemSize.width}px`,*/}
+                        {/*                            height: `${itemSize.height}px`,*/}
+                        {/*                        }}*/}
+                        {/*                    />*/}
+                        {/*                );*/}
+                        {/*            })}*/}
+                        {/*            {showMore && (*/}
+                        {/*                <div className="more-items-card hidden">*/}
+                        {/*                    <GCard type="presentation" info={presentationDetails}/>*/}
+                        {/*                </div>*/}
+                        {/*            )}*/}
+                        {/*        </UList>}*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
 
                     </div>
 
@@ -338,5 +349,5 @@ const ContainerContent: React.FC = ({}) => {
         </>
     )
 };
-export {ContainerContent}
+export {MainContent}
 

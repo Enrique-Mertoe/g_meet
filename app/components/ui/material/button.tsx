@@ -33,7 +33,7 @@ const Button: React.FC<{
 
 } & React.ButtonHTMLAttributes<HTMLButtonElement>> = ({text, icon, design = "light", className, ...rest}) => {
     const buttonStyles = {
-        primary: "bg-green-500 text-white border border-green-500 hover:bg-green-600 hover:border-green-600",
+        primary: "bg-blue-500 text-white border border-blue-500 hover:bg-blue-600 hover:border-blue-600",
         light: "bg-gray-100 text-black border border-gray-100 hover:bg-gray-300 hover:border-gray-400",
         white: "bg-white text-black border border-white hover:bg-gray-200 hover:border-gray-300",
         secondary: "bg-gray-500 text-white border border-gray-500 hover:bg-gray-600 hover:border-gray-600",
@@ -45,7 +45,7 @@ const Button: React.FC<{
 
         //soft design
         // Soft button designs
-        "primary-soft": "text-green-500 bg-green-100 hover:bg-green-500 hover:text-white",
+        "primary-soft": "text-blue-500 bg-blue-100 hover:bg-blue-500 hover:text-white",
         "light-soft": "text-gray-600 bg-gray-100 bg-opacity-10 hover:bg-gray-300 hover:text-black",
         "white-soft": "text-white bg-white bg-opacity-10 hover:bg-white hover:text-black",
         "secondary-soft": "text-gray-600 bg-gray-200 bg-opacity-10 hover:bg-gray-600 hover:text-white",
@@ -57,7 +57,7 @@ const Button: React.FC<{
 
 
         // outline design
-        "outline-primary": "bg-transparent text-green-500 border border-green-500 hover:bg-green-500 hover:text-white hover:border-green-500",
+        "outline-primary": "bg-transparent text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white hover:border-blue-500",
         "outline-white": "bg-transparent text-white border border-white hover:bg-white hover:text-black hover:border-white",
         "outline-secondary": "bg-transparent text-gray-500 border border-gray-500 hover:bg-gray-500 hover:text-white hover:border-gray-500",
         "outline-success": "bg-transparent text-green-400 border border-green-400 hover:bg-green-400 hover:text-white hover:border-green-400",
@@ -74,13 +74,15 @@ const Button: React.FC<{
 
     return (
         <button
-            className={`px-4 py-[0.1rem] cursor-pointer rounded-sm font-semibold transition-all ${buttonStyles[design]} ${className}`}
+            className={`px-4 py-[0.1rem] duration-300 cursor-pointer rounded-sm font-semibold transition-all ${buttonStyles[design]} ${className}`}
             {...rest}
         >
-            {
-                icon && <Icon/>
-            }
-            {text && text}
+            <div className="hstack gap-2">
+                {
+                    icon && <Icon/>
+                }
+                {text && text}
+            </div>
         </button>
     );
 };

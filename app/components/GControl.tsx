@@ -6,6 +6,7 @@ import SignalBox from "@/app/manage/SignalBox";
 import {sSm} from "@/app/manage/Screenshare";
 import Alert from "@/app/components/ui/Alert";
 import {sdM} from "@/app/components/ui/elements/DetailScreen";
+import InfoPanel from "@/app/components/Meeting/DetailWindow/InfoPanel";
 
 interface ControlParams {
     mute?: boolean;
@@ -243,7 +244,9 @@ const DetailView = () => {
         <>
             <div className="w-auto gap-4 bg-dark pe-3 ms-auto rounded-full p-2 flex justify-center items-center">
                 <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="info"
-                             onClick={handleClick}
+                             onClick={() => {
+                                 sdM.toggleMode(InfoPanel().create())
+                             }}
                 />
                 <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="message-square-text"/>
                 <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="users"/>
