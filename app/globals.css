@@ -844,25 +844,126 @@ body {
 }
 
 .tooltip {
-
+    --ttp-pointer-size: 5px;
+    --ttp-pointer-margin: -5px;
+    --ttp-offset-x: 10px;
+    --ttp-offset-y: -10px;
+    transition: all 0.3s;
+    font-size: 0.6975rem;
 }
 
 .tooltip .tooltip-inner {
+    background-color: #333;
+    color: #fff;
+    border-radius: 5px;
+    padding: 0 6px;
     position: relative;
+    display: inline-block;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: left;
+    text-align: start;
+    text-decoration: none;
+    text-shadow: none;
+    text-transform: none;
+    letter-spacing: normal;
+    word-break: normal;
+    white-space: normal;
+    word-spacing: normal;
+    line-break: auto;
+    word-wrap: break-word;
+    width: max-content;
+
 }
 
-.tooltip .tooltip-inner::before {
-    position: absolute;
-    content: "";
-    width: 15px;
-    height: 15px;
-    background: red;
-}
-
-.tooltip.top .tooltip-inner::before {
-    /*margin-bottom: -2.5px;*/
+/* Top Tooltip Animation */
+.tooltip-top {
+    bottom: 125%;
     left: 50%;
-    top: 100%;
-    transform: translate(-100%, -50%);
+    transform: translateX(-50%) translateY(var(--ttp-offset-x));
+}
 
+.tooltip-top::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: var(--ttp-pointer-margin);
+    border-width: var(--ttp-pointer-size);
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.tooltip-top.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Bottom Tooltip Animation */
+.tooltip-bottom {
+    top: 125%;
+    left: 50%;
+    transform: translateX(-50%) translateY(var(--ttp-offset-y));
+}
+
+.tooltip-bottom::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: var(--ttp-pointer-margin);
+    border-width: var(--ttp-pointer-size);
+    border-style: solid;
+    border-color: transparent transparent #333 transparent;
+}
+
+.tooltip-bottom.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Left Tooltip Animation */
+.tooltip-left {
+    right: 125%;
+    top: 50%;
+    transform: translateY(-50%) translateX(var(--ttp-offset-x));
+}
+
+.tooltip-left::after {
+    content: "";
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    margin-top: var(--ttp-pointer-margin);
+    border-width: var(--ttp-pointer-size);
+    border-style: solid;
+    border-color: transparent transparent transparent #333;
+}
+
+.tooltip-left.show {
+    transform: translateY(-50%) translateX(0);
+}
+
+/* Right Tooltip Animation */
+.tooltip-right {
+    left: 125%;
+    top: 50%;
+    transform: translateY(-50%) translateX(var(--ttp-offset-y));
+}
+
+.tooltip-right .tooltip-inner::after {
+    content: "";
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    margin-top: var(--ttp-pointer-margin);
+    border-width: var(--ttp-pointer-size);
+    border-style: solid;
+    border-color: transparent #333 transparent transparent;
+}
+
+.tooltip-right.show {
+    transform: translateY(-50%) translateX(0);
+}
+
+.tooltip-wrapper {
+    max-width: fit-content;
 }

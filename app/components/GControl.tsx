@@ -7,6 +7,7 @@ import {sSm} from "@/app/manage/Screenshare";
 import Alert from "@/app/components/ui/Alert";
 import {sdM} from "@/app/components/ui/elements/DetailScreen";
 import InfoPanel from "@/app/components/Meeting/DetailWindow/InfoPanel";
+import Tooltip from "@/app/components/ui/material/Tooltip";
 
 interface ControlParams {
     mute?: boolean;
@@ -27,7 +28,8 @@ interface ControlItemProps<T = any> {
     onAction?: (event: CEvent<T>) => void;
     className?: string;
     onToggle?: (event: CEvent<T>) => void;
-    design?: string
+    design?: string;
+    tooltip?: string
 }
 
 const ControlItem: React.FC<ControlItemProps<boolean> & React.HTMLAttributes<HTMLElement>> = React.memo(({
@@ -39,6 +41,7 @@ const ControlItem: React.FC<ControlItemProps<boolean> & React.HTMLAttributes<HTM
                                                                                                              className,
                                                                                                              onToggle,
                                                                                                              design,
+                                                                                                             tooltip,
                                                                                                              ...rest
                                                                                                          }) => {
     const [inActiveState, setInActiveState] = useState(isActive);
@@ -93,22 +96,29 @@ const ControlItem: React.FC<ControlItemProps<boolean> & React.HTMLAttributes<HTM
 
 // Example usage:
     const textColor = extractTextColor(bgColor);
-
-    return (
-        <div className="cursor-pointer flex p-0 rounded-full">
-            {extra && (
-                <div className={`rounded-l-full py-3 ps-2 bg-[#333537] ${className}`}>
-                    <GIcon name="chevron-up" color={`text-white`} size={26}/>
-                </div>
-            )}
-            <div
-                className={`${extra ? "rounded-r-full" : "rounded-full"} p-3 ${bgColor} ${className} transition-all duration-150`}
-                onClick={handleClick}
-                {...rest}
-            >
-                <GIcon name={vIcon} color={textColor} size={26}/>
+    let Cont = <div className="cursor-pointer flex p-0 rounded-full">
+        {extra && (
+            <div className={`rounded-l-full py-3 ps-2 bg-[#333537] ${className}`}>
+                <GIcon name="chevron-up" color={`text-white`} size={26}/>
             </div>
+        )}
+        <div
+            className={`${extra ? "rounded-r-full" : "rounded-full"} p-3 ${bgColor} ${className} transition-all duration-150`}
+            onClick={handleClick}
+            {...rest}
+        >
+            <GIcon name={vIcon} color={textColor} size={24}/>
         </div>
+    </div>
+    return (
+        tooltip ? (() => {
+            let [title,pos] = tooltip.split("|")
+            return <Tooltip text={title.trim()} position={(pos?.trim() ?? "top") as "top" | "bottom" | "left" | "right"} open={false}>
+                {Cont}
+            </Tooltip>
+        })():
+            Cont
+
     );
 });
 
@@ -175,7 +185,7 @@ const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
     }, []);
 
     return (
-        <div className="fixed z-5 right-0 left-0 bottom-0 pb-3">
+        <div className="fixed z-5 right-0 left-0 bottom-0 pb-1">
             <div className="w-full flex justify-center items-center">
                 <div
                     className="w-auto me-auto ms-6 gap-4 text-white font-bold bg-dark rounded-full p-2 flex justify-center items-center">
@@ -183,6 +193,7 @@ const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
                 </div>
                 <div className="mx-auto gap-4 bg-dark me-auto rounded-full p-2 flex justify-center items-center">
                     <ControlItem
+                        tooltip={"Microphone"}
                         extra={<></>}
                         icon="mic|mic-off"
                         isActive={true}
@@ -192,6 +203,7 @@ const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
                         }}
                     />
                     <ControlItem
+                        tooltip={"Camera"}
                         extra={<></>}
                         colors={"bg-[#333537] text[#601410] | bg-[#f9dedcaa] text-[#601410]"}
                         isActive={true}
@@ -201,6 +213,7 @@ const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
                         }}
                     />
                     <ControlItem
+                        tooltip={"Present now"}
                         onAction={(e) => {
                             e.preventDefault();
                             // sSm.ac = !sSm.ac;
@@ -212,16 +225,15 @@ const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
                         colors="bg-[#a8c7fa]"
                         icon="screen-share"
                     />
-                    <ControlItem colors="bg-[#a8c7fa]" icon="hand" onToggle={(e) => {
+                    <ControlItem tooltip={"Raise hand"} colors="bg-[#a8c7fa]" icon="hand" onToggle={(e) => {
                         Alert.confirm("Quit", handler => {
                             handler.positiveFeedback("yes", () => {
                             });
                             handler.negativeFeedback("No")
                         });
                     }}/>
-                    <ControlItem colors="#333537" icon="message-circle"/>
-                    <ControlItem className="px-1" colors="#333537" icon="more-vertical"/>
-                    <ControlItem className="px-5" isActive={true}
+                    <ControlItem tooltip={"More options"} className="px-1" colors="#333537" icon="more-vertical"/>
+                    <ControlItem tooltip={"Leave"} className="px-6" isActive={true}
                                  colors="bg-[#dc362e] hover:bg-[#df463e]|bg-[#dc362e] hover:bg-[#df463e]" icon="phone"/>
                 </div>
                 <div className="ms-auto">
@@ -243,15 +255,15 @@ const DetailView = () => {
     return (
         <>
             <div className="w-auto gap-4 bg-dark pe-3 ms-auto rounded-full p-2 flex justify-center items-center">
-                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="info"
+                <ControlItem tooltip={"Meeting details"} colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="info"
                              onClick={() => {
                                  sdM.toggleMode(InfoPanel().create())
                              }}
                 />
-                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="message-square-text"/>
-                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="users"/>
-                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="shapes"/>
-                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="lock-person"/>
+                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"Chat with everyone"} isActive={true} icon="message-square-text"/>
+                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"People"} isActive={true} icon="users"/>
+                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"Activities"} isActive={true} icon="shapes"/>
+                <ControlItem tooltip={"Host controls"} colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="lock-person"/>
             </div>
 
         </>

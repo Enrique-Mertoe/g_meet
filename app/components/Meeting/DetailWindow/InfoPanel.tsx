@@ -21,21 +21,16 @@ const InfoPanelView: React.FC = () => {
                 </p>
             </div>
 
-            <div className="mt-4 gap-2 vstack">
-                <Tooltip text="This is a tooltip" position="right" open={false} design="bg-blue-500">
-                    <button className="px-4 py-2 bg-gray-800 text-white rounded">Hover me</button>
-                </Tooltip>
-
-                <Tooltip text={"share"} position={"top"} open={false}>
-                    <Button
-                        icon={
-                            <GIcon name={"copy"} color={"text-current"} size={16}/>
-                        }
-                        text={"Copy joining info"}
-                        design={"primary-soft"}
-                        className={"!rounded-full !p-2 !px-4 bg-transparent hover:!bg-blue-100 hover:!text-blue-500"}
-                    />
-                </Tooltip>
+            <div className="mt-4 gap-2">
+                <Button
+                    icon={
+                        <GIcon name={"copy"} color={"text-current"} size={16}/>
+                    }
+                    text={"Copy joining info"}
+                    design={"primary-soft"}
+                    className={"!rounded-full mb-2 !p-2 !px-4 text-sm bg-transparent hover:!bg-blue-100 hover:!text-blue-500"}
+                />
+                <br/>
 
                 <Button
                     icon={
@@ -43,7 +38,7 @@ const InfoPanelView: React.FC = () => {
                     }
                     text={"Share info"}
                     design={"success-soft"}
-                    className={"!rounded-full bg-transparent hover:!bg-green-100 hover:!text-green-500 !p-2 !px-4"}
+                    className={"!rounded-full text-sm bg-transparent hover:!bg-green-100 hover:!text-green-500 !p-2 !px-4"}
                 />
             </div>
         </div>

@@ -289,7 +289,7 @@ const MainContent: React.FC = ({}) => {
     return (
         <>
 
-            <div className={"vstack h-full bg-[rgb(32_33_36)] w-full gap-1 "}>
+            <div className={"vstack h-full bg-[#131314] w-full gap-1 "}>
 
                 <div className={"flex h-full"}>
                     <div
