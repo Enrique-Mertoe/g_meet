@@ -21,7 +21,7 @@ import {
     Info,
     AlertCircle,
     HelpCircle,
-    MessageSquareMore, Shapes, MessageSquareText, X, Copy, Forward
+    MessageSquareMore, Shapes, MessageSquareText, X, Copy, Forward, SendHorizontal, ArrowRight
 
 } from "lucide-react";
 import React, {forwardRef} from "react";
@@ -57,9 +57,9 @@ const ICONS: Record<string, LucideIcon> = {
     ChevronUp, HelpCircle,
     Hand,
     LockPerson,
-    Square, Pause, Play,
+    Square, Pause, Play,SendHorizontal,
     MessageSquareText,
-    Shapes, X, Copy,Forward
+    Shapes, X, Copy,Forward,ArrowRight
 };
 
 interface IconProps {

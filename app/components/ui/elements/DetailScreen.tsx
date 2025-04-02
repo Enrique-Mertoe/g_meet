@@ -9,6 +9,7 @@ import Alert from "@/app/components/ui/Alert";
 
 const DetailScreen: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [toggle, setToggle] = useState(false);
     const [visible, setIsVisible] = useState(false);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -25,6 +26,7 @@ const DetailScreen: React.FC = () => {
                 setIsOpen(false);
                 timeoutRef.current = setTimeout(() => setIsVisible(false), 300);
             }
+            setToggle(handler.mode == "on")
 
             handler.data && loadData(handler.data)
         };
@@ -51,21 +53,20 @@ const DetailScreen: React.FC = () => {
     return (
         <>
             <div
-                className={`relative flex-none transition-all duration-300 h-full p-2 pb-7  ${isOpen ? "w-96" : "w-0 px-0"} ${!visible && "hidden"}`}>
+                className={`relative flex-none pb-[5rem] transition-all duration-300 h-full p-2  ${isOpen ? "w-96" : "w-0 px-0"} ${!visible && "hidden"}`}>
                 <div className="rounded-sm bg-white w-full h-full">
                     {
-                        isOpen &&
-                        <div className="">
+                        <div className={`h-full w-full flex flex-col ${!toggle && "hidden"}`}>
                             <div className="hstack border-b-1 p-3">
                                 <span ref={titleRef} className={"font-bold text-gray-600"}>Activities</span>
                                 <div className="ms-auto">
-                                    <Button icon={<GIcon name={"x"} color={"text-gray-900"}/>}
+                                    <Button icon={<GIcon name={"arrow-right"} color={"text-gray-900"}/>}
                                             className={"aspect-square !rounded-full !p-2"}
                                             onClick={() => sdM.mode("off")}
                                     />
                                 </div>
                             </div>
-                            <div className="vstack">
+                            <div className="vstack grow ">
                                 {content}
                             </div>
                         </div>
@@ -78,40 +79,35 @@ const DetailScreen: React.FC = () => {
 
 interface SDetailProps {
     mode: DetailScreenHandler["mode"];
-    handler: DetailWindowHandler
+    handler: DetailWindowHandler;
 }
 
 class SDetailManager {
     private _mode: SDetailProps["mode"] = "off";
-    private _handlers: Record<string, DetailWindowHandler> = {}
-    private _activeHandler?: string | null = null
+    private _handlers: Record<string, DetailWindowHandler> = {};
+    private _activeHandler: string | null = null;
 
     mode(mode?: SDetailProps["mode"], handler?: DetailWindowHandler) {
-        if (!mode)
-            return this._mode;
-        this._mode = mode
+        if (!mode) return this._mode;
 
-        if (handler && !this._handlers[handler?.key]) {
-            this._handlers[handler.key] = handler
-        }
-        SignalBox.trigger("screen-details", {
-            mode: mode,
-            data: handler
-        })
+        this._mode = mode;
+        if (mode === "on") this._activeHandler = handler?.key ?? null;
+
+        if (handler) this._handlers[handler.key] ||= handler;
+
+        SignalBox.trigger("screen-details", {mode, data: handler});
     }
 
     toggleMode(handler?: DetailWindowHandler) {
-        this.mode(this._mode == "off" ? "on" : "off",
-            handler
-        )
+        const isActive = this._mode === "on" && this._activeHandler === handler?.key;
+        this.mode(isActive ? "off" : "on", handler);
     }
 
     activeHandler(handler?: DetailWindowHandler) {
-        if (!handler) return this._activeHandler
-        this._activeHandler = handler.key
+        if (!handler) return this._activeHandler;
+        this._activeHandler = handler.key;
     }
 }
 
 export const sdM = new SDetailManager();
-
 export default DetailScreen;

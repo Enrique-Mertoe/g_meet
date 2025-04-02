@@ -8,6 +8,7 @@ import Alert from "@/app/components/ui/Alert";
 import {sdM} from "@/app/components/ui/elements/DetailScreen";
 import InfoPanel from "@/app/components/Meeting/DetailWindow/InfoPanel";
 import Tooltip from "@/app/components/ui/material/Tooltip";
+import ChatPanel from "@/app/components/Meeting/DetailWindow/ChatPanel";
 
 interface ControlParams {
     mute?: boolean;
@@ -112,11 +113,12 @@ const ControlItem: React.FC<ControlItemProps<boolean> & React.HTMLAttributes<HTM
     </div>
     return (
         tooltip ? (() => {
-            let [title,pos] = tooltip.split("|")
-            return <Tooltip text={title.trim()} position={(pos?.trim() ?? "top") as "top" | "bottom" | "left" | "right"} open={false}>
-                {Cont}
-            </Tooltip>
-        })():
+                let [title, pos] = tooltip.split("|")
+                return <Tooltip text={title.trim()} position={(pos?.trim() ?? "top") as "top" | "bottom" | "left" | "right"}
+                                open={false}>
+                    {Cont}
+                </Tooltip>
+            })() :
             Cont
 
     );
@@ -255,15 +257,24 @@ const DetailView = () => {
     return (
         <>
             <div className="w-auto gap-4 bg-dark pe-3 ms-auto rounded-full p-2 flex justify-center items-center">
-                <ControlItem tooltip={"Meeting details"} colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="info"
+                <ControlItem tooltip={"Meeting details"} colors={"bg-transparent hover:bg-[#333537]"} isActive={true}
+                             icon="info"
                              onClick={() => {
                                  sdM.toggleMode(InfoPanel().create())
                              }}
                 />
-                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"Chat with everyone"} isActive={true} icon="message-square-text"/>
-                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"People"} isActive={true} icon="users"/>
-                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"Activities"} isActive={true} icon="shapes"/>
-                <ControlItem tooltip={"Host controls"} colors={"bg-transparent hover:bg-[#333537]"} isActive={true} icon="lock-person"/>
+                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"Chat with everyone"} isActive={true}
+                             icon="message-square-text"
+                             onClick={() => {
+                                 sdM.toggleMode(ChatPanel().create())
+                             }}
+                />
+                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"People"} isActive={true}
+                             icon="users"/>
+                <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"Activities"} isActive={true}
+                             icon="shapes"/>
+                <ControlItem tooltip={"Host controls"} colors={"bg-transparent hover:bg-[#333537]"} isActive={true}
+                             icon="lock-person"/>
             </div>
 
         </>
