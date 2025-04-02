@@ -1,15 +1,15 @@
 "use client";
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import GIcon from "@/app/components/Icons";
+import GIcon from "@/app/ui/components/Icons";
 import {lighten, darken} from "polished";
 import SignalBox from "@/app/manage/SignalBox";
 import {sSm} from "@/app/manage/Screenshare";
-import Alert from "@/app/components/ui/Alert";
-import {sdM} from "@/app/components/ui/elements/DetailScreen";
-import InfoPanel from "@/app/components/Meeting/DetailWindow/InfoPanel";
-import Tooltip from "@/app/components/ui/material/Tooltip";
-import ChatPanel from "@/app/components/Meeting/DetailWindow/ChatPanel";
-import ParticipantsPanel from "@/app/components/Meeting/DetailWindow/ParticipantsPanel";
+import Alert from "@/app/ui/components/Dialogs/Alert";
+import {sdM} from "@/app/ui/Meeting/DetailWindow/DetailScreen";
+import InfoPanel from "@/app/ui/Meeting/DetailWindow/InfoPanel";
+import Tooltip from "@/app/ui/components/material-design/Tooltip";
+import ChatPanel from "@/app/ui/Meeting/DetailWindow/ChatPanel";
+import ParticipantsPanel from "@/app/ui/Meeting/DetailWindow/ParticipantsPanel";
 
 interface ControlParams {
     mute?: boolean;
@@ -276,7 +276,7 @@ const DetailView = () => {
                              }}
                              icon="users"/>
                 <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"Activities"} isActive={true}
-                             icon="shapes"/>
+                             icon="layout-dashboard"/>
                 <ControlItem tooltip={"Host controls"} colors={"bg-transparent hover:bg-[#333537]"} isActive={true}
                              icon="lock-person"/>
             </div>

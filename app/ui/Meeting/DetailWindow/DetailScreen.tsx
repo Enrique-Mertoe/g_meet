@@ -1,10 +1,8 @@
 import React, {ReactNode, useEffect, useRef, useState} from "react";
-import GIcon from "@/app/components/Icons";
-import {Button} from "@/app/components/ui/material/button";
+import GIcon from "@/app/ui/components/Icons";
+import {Button} from "@/app/ui/components/material-design/button";
 import SignalBox from "@/app/manage/SignalBox";
-import {sSm} from "@/app/manage/Screenshare";
-import {DetailScreenHandler, DetailWindowHandler} from "@/app/components/Meeting/DetailWindow/DetailWindowHandler";
-import Alert from "@/app/components/ui/Alert";
+import {DetailScreenHandler, DetailWindowHandler} from "@/app/ui/Meeting/DetailWindow/DetailWindowHandler";
 
 
 const DetailScreen: React.FC = () => {
@@ -53,10 +51,10 @@ const DetailScreen: React.FC = () => {
     return (
         <>
             <div
-                className={`relative flex-none pb-[5rem] transition-all duration-300 h-full p-2  ${isOpen ? "w-96" : "w-0 px-0"} ${!visible && "hidden"}`}>
-                <div className="rounded-sm bg-white w-full h-full">
+                className={`relative flex-none pb-[5rem] py-3 transition-all duration-300 h-full p-0  ${isOpen ? "w-[350px]" : "w-0"} ${!visible && "hidden"}`}>
+                <div className="rounded-md bg-white w-[350px] h-full">
                     {
-                        <div className={`h-full w-full flex flex-col ${!toggle && "hidden"}`}>
+                        <div className={`size-full  flex flex-col ${!toggle && "hidden"}`}>
                             <div className="hstack border-b-1 p-3">
                                 <span ref={titleRef} className={"font-bold text-gray-600"}>Activities</span>
                                 <div className="ms-auto">

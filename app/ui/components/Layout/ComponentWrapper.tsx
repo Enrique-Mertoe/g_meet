@@ -1,11 +1,11 @@
 "use client"
 import React, {RefObject, useCallback, useEffect, useRef, useState} from "react";
-import {PScreen, PSEvent, UList} from "@/app/components/Containers";
-import GCard from "@/app/components/GCard";
-import GControl from "@/app/components/GControl";
-import Alert from "@/app/components/ui/Alert";
-import DetailScreen from "@/app/components/ui/elements/DetailScreen";
-import UserGrid from "@/app/components/Meeting/UserGrid";
+import {PScreen, PSEvent, UList} from "@/app/ui/components/Layout/Containers";
+import GCard from "@/app/ui/components/Layout/GCard";
+import GControl from "@/app/ui/Meeting/Controls/GControl";
+import Alert from "@/app/ui/components/Dialogs/Alert";
+import DetailScreen from "@/app/ui/Meeting/DetailWindow/DetailScreen";
+import UserGrid from "@/app/ui/Meeting/UserGrid";
 
 const ComponentWrapper: React.FC<{ children: React.ReactNode }> = ({children}) => {
     return (

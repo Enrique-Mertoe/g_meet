@@ -1,5 +1,5 @@
 import React, {CSSProperties} from "react";
-import Card from "@/app/components/widgets/Card";
+import Card from "@/app/ui/components/material-design/Card";
 import Image from "next/image";
 import {Mic, MicOff} from "lucide-react";
 import {PresentationInfo, UserInfo} from "@/app/fn";

@@ -1,9 +1,9 @@
 "use client"
 import React, {ReactNode, useCallback, useEffect, useRef} from "react";
 import SignalBox from "@/app/manage/SignalBox";
-import GIcon from "@/app/components/Icons";
+import GIcon from "@/app/ui/components/Icons";
 import {sSm} from "@/app/manage/Screenshare";
-import Alert from "@/app/components/ui/Alert";
+import Alert from "@/app/ui/components/Dialogs/Alert";
 
 
 interface VScreenProps {

@@ -1,10 +1,10 @@
 "use client";
 import React, {useCallback, useEffect, useState} from "react";
 import {AlertCircle, Info, CheckCircle, AlertTriangle} from "lucide-react";
-import {DHook, DialogEventListener, DialogView} from "@/app/components/ui/dialogView";
+import {DHook, DialogEventListener, DialogView} from "@/app/ui/components/Dialogs/dialogView";
 import {createRoot} from "react-dom/client";
-import GIcon from "@/app/components/Icons";
-import {Button} from "@/app/components/ui/material/button";
+import GIcon from "@/app/ui/components/Icons";
+import {Button} from "@/app/ui/components/material-design/button";
 
 const icons = {
     error: <AlertCircle className="text-red-500 w-6 h-6"/>,

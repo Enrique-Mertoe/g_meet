@@ -1,4 +1,4 @@
-import ComponentWrapper, {MainContent} from "@/app/components/widgets/ComponentWrapper";
+import ComponentWrapper, {MainContent} from "@/app/ui/components/Layout/ComponentWrapper";
 
 export default function Home() {
 

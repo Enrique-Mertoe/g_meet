@@ -1,8 +1,8 @@
 import React, {CSSProperties, useEffect, useRef, useState} from "react";
-import {UList} from "@/app/components/Containers";
-import GCard from "@/app/components/GCard";
+import {UList} from "@/app/ui/components/Layout/Containers";
+import GCard from "@/app/ui/components/Layout/GCard";
 import {UserInfo, PresentationInfo} from "@/app/fn";
-import Alert from "@/app/components/ui/Alert";
+import Alert from "@/app/ui/components/Dialogs/Alert";
 
 interface UserGridProps {
     items: UserInfo[];

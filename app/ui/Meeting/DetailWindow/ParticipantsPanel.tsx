@@ -1,9 +1,9 @@
 import React from "react";
-import {Button} from "@/app/components/ui/material/button";
-import GIcon from "@/app/components/Icons";
-import {DetailWindowHandler} from "@/app/components/Meeting/DetailWindow/DetailWindowHandler";
-import Tooltip from "@/app/components/ui/material/Tooltip";
-import {TextInput} from "@/app/components/ui/material/Input";
+import {Button} from "@/app/ui/components/material-design/button";
+import GIcon from "@/app/ui/components/Icons";
+import {DetailWindowHandler} from "@/app/ui/Meeting/DetailWindow/DetailWindowHandler";
+import Tooltip from "@/app/ui/components/material-design/Tooltip";
+import {TextInput} from "@/app/ui/components/material-design/Input";
 
 const ParticipantsView: React.FC = () => {
 
