@@ -9,7 +9,7 @@ const InfoPanelView: React.FC = () => {
     return (
         <div className={"vstack p-2 rounded p-3"}>
             <h6 className={"font-bold mb-3 text-gray-900 text-sm"}>Joining Info</h6>
-            <div className="vstack text-gray-700">
+            <div className="flex flex-col text-gray-700">
                 <p>
                     https://meet.google.com/zox-txrm-xvd
                 </p>
@@ -29,16 +29,6 @@ const InfoPanelView: React.FC = () => {
                     text={"Copy joining info"}
                     design={"primary-soft"}
                     className={"!rounded-full mb-2 !p-2 !px-4 text-sm bg-transparent hover:!bg-blue-100 hover:!text-blue-500"}
-                />
-                <br/>
-
-                <Button
-                    icon={
-                        <GIcon name={"forward"} color={"text-current"} size={16}/>
-                    }
-                    text={"Share info"}
-                    design={"success-soft"}
-                    className={"!rounded-full text-sm bg-transparent hover:!bg-green-100 hover:!text-green-500 !p-2 !px-4"}
                 />
             </div>
         </div>

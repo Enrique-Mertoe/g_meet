@@ -9,6 +9,7 @@ import {sdM} from "@/app/components/ui/elements/DetailScreen";
 import InfoPanel from "@/app/components/Meeting/DetailWindow/InfoPanel";
 import Tooltip from "@/app/components/ui/material/Tooltip";
 import ChatPanel from "@/app/components/Meeting/DetailWindow/ChatPanel";
+import ParticipantsPanel from "@/app/components/Meeting/DetailWindow/ParticipantsPanel";
 
 interface ControlParams {
     mute?: boolean;
@@ -270,6 +271,9 @@ const DetailView = () => {
                              }}
                 />
                 <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"People"} isActive={true}
+                              onClick={() => {
+                                 sdM.toggleMode(ParticipantsPanel().create())
+                             }}
                              icon="users"/>
                 <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"Activities"} isActive={true}
                              icon="shapes"/>

@@ -21,7 +21,7 @@ import {
     Info,
     AlertCircle,
     HelpCircle,
-    MessageSquareMore, Shapes, MessageSquareText, X, Copy, Forward, SendHorizontal, ArrowRight
+    MessageSquareMore, Shapes, MessageSquareText, X, Copy, Forward, SendHorizontal, ArrowRight, UserRoundPlus, Search
 
 } from "lucide-react";
 import React, {forwardRef} from "react";
@@ -41,6 +41,20 @@ const LockPerson: LucideIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGEl
 );
 LockPerson.displayName = "LockPerson";
 
+
+const GLoader: LucideIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>((
+    props, ref
+) =>
+    (
+        <svg ref={ref} width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+            <rect className="spinner_jCIR fill-blue-400" x="1" y="6" width="2.8" height="12"/>
+            <rect className="spinner_jCIR spinner_upm8" x="5.8" y="6" width="2.8" height="12"/>
+            <rect className="spinner_jCIR fill-blue-400 spinner_2eL5" x="10.6" y="6" width="2.8" height="12"/>
+            <rect className="spinner_jCIR spinner_Rp9l" x="15.4" y="6" width="2.8" height="12"/>
+            <rect className="spinner_jCIR fill-blue-400 spinner_dy3W" x="20.2" y="6" width="2.8" height="12"/>
+        </svg>
+    ));
+
 const ICONS: Record<string, LucideIcon> = {
     Mic,
     MicOff,
@@ -56,10 +70,10 @@ const ICONS: Record<string, LucideIcon> = {
     Phone,
     ChevronUp, HelpCircle,
     Hand,
-    LockPerson,
-    Square, Pause, Play,SendHorizontal,
+    LockPerson, GLoader,
+    Square, Pause, Play, SendHorizontal,
     MessageSquareText,
-    Shapes, X, Copy,Forward,ArrowRight
+    Shapes, X, Copy, Forward, ArrowRight, UserRoundPlus, Search
 };
 
 interface IconProps {
