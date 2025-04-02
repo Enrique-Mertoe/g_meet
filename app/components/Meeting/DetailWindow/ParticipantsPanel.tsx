@@ -47,17 +47,6 @@ const ParticipantsView: React.FC = () => {
                 </div>
 
             </div>
-
-            <div className="mt-4 gap-2">
-                <Button
-                    icon={
-                        <GIcon name={"copy"} color={"text-current"} size={16}/>
-                    }
-                    text={"Copy joining info"}
-                    design={"primary-soft"}
-                    className={"!rounded-full mb-2 !p-2 !px-4 text-sm bg-transparent hover:!bg-blue-100 hover:!text-blue-500"}
-                />
-            </div>
         </div>
     )
 }
