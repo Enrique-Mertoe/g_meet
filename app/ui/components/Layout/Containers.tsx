@@ -2,7 +2,7 @@
 import React, {ReactNode, useCallback, useEffect, useRef} from "react";
 import SignalBox from "@/app/manage/SignalBox";
 import GIcon from "@/app/ui/components/Icons";
-import {sSm} from "@/app/manage/Screenshare";
+import {sSm} from "@/app/manage/ScreenShare/Screenshare";
 import Alert from "@/app/ui/components/Dialogs/Alert";
 
 

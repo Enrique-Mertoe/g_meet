@@ -850,6 +850,7 @@ body {
     --ttp-offset-y: -10px;
     transition: all 0.3s;
     font-size: 0.6975rem;
+    user-select: none;
 }
 
 .tooltip .tooltip-inner {

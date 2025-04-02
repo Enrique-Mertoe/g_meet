@@ -31,7 +31,7 @@ import {
     ArrowRight,
     UserRoundPlus,
     Search,
-    LayoutDashboard
+    LayoutDashboard, Monitor, FileText
 
 } from "lucide-react";
 import React, {forwardRef} from "react";
@@ -82,7 +82,7 @@ const ICONS: Record<string, LucideIcon> = {
     Hand,
     LockPerson, GLoader,
     Square, Pause, Play, SendHorizontal,
-    MessageSquareText,
+    MessageSquareText,Monitor,FileText,
     Shapes, X, Copy, Forward, ArrowRight, UserRoundPlus, Search,LayoutDashboard
 };
 

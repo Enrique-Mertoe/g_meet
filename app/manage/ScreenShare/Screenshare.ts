@@ -1,4 +1,7 @@
 // screenShareManager.ts
+import ScreenShareOptions from "@/app/ui/Meeting/Sharing/ScreenShareOptions";
+import {ControlItemOptionsAction} from "@/app/ui/Meeting/Controls/Controls";
+
 class ScreenShareManager {
     private stream: MediaStream | null = null;
     private listeners: ((isActive: boolean) => void)[] = [];
@@ -56,6 +59,11 @@ class ScreenShareManager {
 
     private notifyListeners(isActive: boolean) {
         this.listeners.forEach(callback => callback(isActive));
+    }
+
+
+    Options(props: ControlItemOptionsAction) {
+        return ScreenShareOptions(props)
     }
 }
 
