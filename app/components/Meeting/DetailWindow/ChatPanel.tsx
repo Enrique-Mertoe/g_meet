@@ -50,7 +50,7 @@ class Builder {
     private readonly title: string
 
     constructor() {
-        this.title = "Meeting details"
+        this.title = "Messages"
         this.view = <ChatPanelView/>
     }
 
