@@ -1,4 +1,4 @@
-import ComponentWrapper, {MainContent} from "@/app/ui/components/Layout/ComponentWrapper";
+import ComponentWrapper, {MainContent} from "@/root/ui/components/Layout/ComponentWrapper";
 
 export default function Home() {
 
@@ -13,3 +13,5 @@ export default function Home() {
         </div>
     );
 }
+
+
