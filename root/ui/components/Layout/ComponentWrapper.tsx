@@ -26,81 +26,81 @@ const MainContent: React.FC = ({}) => {
     const wsm = useWebSocket();
     const userDetails = [
             {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             },
             {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             },
             {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
-                id: "c",
+                uid: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
