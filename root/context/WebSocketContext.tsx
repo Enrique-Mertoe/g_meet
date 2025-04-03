@@ -9,7 +9,7 @@ interface WSResponse {
 
 // WebSocketManager class (can remain unchanged)
 class WebSocketManager {
-    private static DEFAULT_WS_URL = "ws://localhost:3500";
+    private static DEFAULT_WS_URL = "wss://ws.kaigates.com";
     ws: WebSocket;
     ready: boolean = false;
     receivedData: WSResponse | null = null;
