@@ -3,6 +3,9 @@ import SignalBox from "@/root/manage/SignalBox";
 import GIcon from "@/root/ui/components/Icons";
 import Alert from "@/root/ui/components/Dialogs/Alert";
 import {sSm} from "@/root/manage/ScreenShare/Screenshare";
+import Presenter from "@/root/ui/Meeting/Presenter";
+import {useAccount, useUserManager} from "@/root/manage/useUserManager";
+import Viewer from "@/root/ui/Meeting/Viewer";
 
 export interface PSEvent {
     on: (action: string, handler: Function) => void;
@@ -16,6 +19,7 @@ const PScreen: React.FC<{
 }> = React.memo(({presenting, listener}) => {
 
     const videoRef = useRef<HTMLVideoElement>(null);
+    const account = useAccount();
     let eventHandlers: Record<string, Function[]> = {};
     let ev = {
         on: (action: string, handler: Function) => {
@@ -94,7 +98,13 @@ const PScreen: React.FC<{
                     </div>
                 </div>
 
-                <video ref={videoRef} autoPlay playsInline className="w-full rounded-inherit bg-dark h-full"></video>
+                {/*<video ref={videoRef} autoPlay playsInline className="w-full rounded-inherit bg-dark h-full"></video>*/}
+                {
+                    account.account() == "host" ?
+                        <Presenter/>
+                        :
+                        <Viewer/>
+                }
             </div>
         </>
     )

@@ -4,50 +4,57 @@ import GIcon from "@/root/ui/components/Icons";
 import {DetailWindowHandler} from "@/root/ui/Meeting/DetailWindow/DetailWindowHandler";
 import {TextInput} from "@/root/ui/components/material-design/Input";
 import ToggleSwitch from "@/root/ui/components/material-design/ToggleSwitch";
-import useWSManager from "@/root/manage/WsManager";
 import MessageItem from "@/root/ui/Meeting/Messaging/MessageItem";
 import SignalBox from "@/root/manage/SignalBox";
-import {acc, useUserManager} from "@/root/manage/useUserManager";
+import {acc} from "@/root/manage/useUserManager";
+import {useWebSocket} from "@/root/context/WebSocketContext";
+import Interceptors from "undici-types/interceptors";
+import {Chat} from "@/root/manage/ChatManager";
 
 const ChatPanelView: React.FC = React.memo(() => {
-    const ws = useWSManager()
     const [message, setInputValue] = useState("")
-    const messagesRef = useRef<MessageItemProps[]>([]);
+    let [messages, setMSG] = useState<MessageItemProps[]>([]);
     const [newMessage, setNewMessage] = useState(0);
     const formRef = useRef<HTMLFormElement | null>(null)
-
+    const wsm = useWebSocket();
     const submit = () => {
         if (acc.user() && message) {
-            ws.send({
+            wsm.send({
                 event: "message",
                 action: "new",
                 identity: acc.user()?.uid ?? "",
                 data: {message}
             })
+
             formRef.current?.reset()
             setInputValue("")
         }
     }
-
     const appendMessage = (newMessage: MessageItemProps) => {
-        setNewMessage(prev => ++prev);
-        messagesRef.current = [...messagesRef.current, newMessage];
+        // setMessages(prevMessages => {
+        //     return [newMessage]
+        // });'
+        setMSG(prev => [...prev, newMessage])
+
+        setNewMessage(prev => ++prev)
     };
 
-    const handleMessageSignal = (data: MessageItemProps) => {
+    const handleMessageSignal = (data: WSResponse) => {
+        const newMessage: MessageItemProps = {
+            sender: data.identity === acc.user()?.uid ? "me" : "them",
+            message: (data.data as MessageData)["message"],
+        };
         acc.user() &&
-        appendMessage(data)
-        alert()
+        appendMessage(newMessage)
+
     }
     useEffect(() => {
-        SignalBox.on("msg", handleMessageSignal)
+        acc.user() &&
+        SignalBox.on("message", handleMessageSignal)
         return () => {
-            SignalBox.off("msg", handleMessageSignal);
-        };
-    }, []);
 
-    useEffect(() => {
-        alert("start")
+            SignalBox.off("message", handleMessageSignal);
+        };
     }, []);
 
     return (
@@ -73,7 +80,7 @@ const ChatPanelView: React.FC = React.memo(() => {
                 </div>
                 <div className="messages">
                     <div className="imessage">
-                        {messagesRef.current.map((msg, index) => (
+                        {messages.map((msg, index) => (
                             <MessageItem key={index} sender={msg.sender} message={msg.message}/>
                         ))}
                     </div>

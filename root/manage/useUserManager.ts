@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext, useRef} from "react";
 import {generateMeetID, generateUsername} from "@/root/utility";
 import {UserInfo} from "@/root/fn";
 import {useSearchParams} from "next/navigation";
@@ -26,7 +26,7 @@ export function useUserManager(): UserParams {
             uid: generateMeetID(),
             name: generateUsername(),
         });
-    }, []); // Empty dependency array ensures it runs **only once** on mount.
+    }, []);
 
     return {currentUser, accountType};
 }
@@ -34,10 +34,6 @@ export function useUserManager(): UserParams {
 class AccountManager {
     private _c_user: UserInfo | null = null
     private _ac_type: UserParams["accountType"] = null
-
-
-
-
     account = (type?: UserParams["accountType"]) => {
         if (type)
             this._ac_type = type
@@ -48,6 +44,20 @@ class AccountManager {
             this._c_user = user
         return this._c_user
     }
+    static inst: AccountManager | null = null
+
+    static builder() {
+        if (!this.inst)
+            this.inst = new AccountManager()
+        return this.inst
+    }
 }
 
-export const acc = new AccountManager()
+export const acc = AccountManager.builder()
+export const useAccount = () => {
+    const context = useRef(AccountManager.builder());
+    if (!context.current) {
+        throw new Error("useWebSocket must be used within a WebSocketProvider");
+    }
+    return context.current;
+};

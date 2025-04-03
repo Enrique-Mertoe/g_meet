@@ -91,6 +91,10 @@ class SignalBox {
     static pluginsList(): string[] {
         return Object.keys(this.plugins);
     }
+
+    static get(action: string) {
+        return this.eventHandlers[action]
+    }
 }
 
 export default SignalBox;

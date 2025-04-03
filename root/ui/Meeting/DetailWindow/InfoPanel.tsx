@@ -36,12 +36,12 @@ const InfoPanelView: React.FC = () => {
 }
 
 class Builder {
-    private readonly view: React.ReactNode
+    private readonly view: React.FC
     private readonly title: string
 
     constructor() {
         this.title = "Meeting details"
-        this.view = <InfoPanelView/>
+        this.view = InfoPanelView
     }
 
     create(): DetailWindowHandler {

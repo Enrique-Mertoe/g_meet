@@ -1,9 +1,10 @@
 import SignalBox from "@/root/manage/SignalBox";
 import {acc} from "@/root/manage/useUserManager";
 import {absolutePathToPage} from "next/dist/shared/lib/page-path/absolute-path-to-page";
+import {generateMeetID} from "@/root/utility";
 
 class ChatManager {
-    private _chats: MessageItemProps[] = []
+    private _chats: Record<string, MessageItemProps> = {}
     windowSignal: "on" | "off" = "off"
 
     constructor() {
@@ -14,9 +15,10 @@ class ChatManager {
         const newMessage: MessageItemProps = {
             sender: data.identity === acc.user()?.uid ? "me" : "them",
             message: (data.data as MessageData)["message"],
+            id: generateMeetID()
         };
-        this.messages(newMessage)
-
+        this._chats[newMessage.id] = newMessage
+        this._sendSignal(newMessage)
 
     };
 
@@ -24,11 +26,7 @@ class ChatManager {
         acc.user() &&
         this.appendMessage(data)
     }
-    messages = (message?: MessageItemProps) => {
-        if (!message)
-            return this._chats
-        this._chats.push(message)
-        this._sendSignal(message)
+    messages = () => {
         return this._chats
     }
 

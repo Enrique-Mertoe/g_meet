@@ -52,12 +52,12 @@ const ParticipantsView: React.FC = () => {
 }
 
 class Builder {
-    private readonly view: React.ReactNode
+    private readonly view: React.FC
     private readonly title: string
 
     constructor() {
         this.title = "Participants"
-        this.view = <ParticipantsView/>
+        this.view = ParticipantsView
     }
 
     create(): DetailWindowHandler {

@@ -4,8 +4,8 @@ import UserGrid from "@/root/ui/Meeting/UserGrid";
 import DetailScreen from "@/root/ui/Meeting/DetailWindow/DetailScreen";
 import GControl from "@/root/ui/Meeting/Controls/GControl";
 import PresentationDisplay, {PSEvent} from "@/root/ui/Meeting/PresentationDisplay";
-import WSManager from "@/root/manage/WsManager";
 import {acc, useUserManager} from "@/root/manage/useUserManager";
+import {useWebSocket, WebSocketProvider} from "@/root/context/WebSocketContext";
 
 const ComponentWrapper: React.FC<{ children: React.ReactNode }> = ({children}) => {
     return (
@@ -23,7 +23,7 @@ const ComponentWrapper: React.FC<{ children: React.ReactNode }> = ({children}) =
 export default ComponentWrapper;
 
 const MainContent: React.FC = ({}) => {
-
+    const wsm = useWebSocket();
     const userDetails = [
             {
                 name: "John Doe",
@@ -99,7 +99,7 @@ const MainContent: React.FC = ({}) => {
             content: (<iframe src="https://example.com/presentation" className="w-full h-full"/>)
         };
 
-
+    useUserManager()
     const [isOpen, setIsOpen] = useState(true);
     const [isvisible, setIsvisible] = useState(isOpen);
     const [screenItems, setScreenItems] = useState(userDetails);
@@ -284,18 +284,16 @@ const MainContent: React.FC = ({}) => {
         // };
     }, [isOpen]);
 
-    let userManager = useUserManager();
-    let ws = WSManager();
     useEffect(() => {
-        if (acc.account() && ws.ready) {
-            ws.send({
+        if (acc.account() && wsm.ready) {
+            wsm.send({
                 event: "connection",
                 data: {},
                 identity: "hvjv",
                 action: "check"
             })
         }
-    }, [ws.ready]);
+    }, []);
 
     const itemsToShow = screenItems.slice(0, itemsPerRow * rows);
 

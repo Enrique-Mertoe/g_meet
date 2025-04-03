@@ -1,23 +1,53 @@
-import useWebSocket from "@/root/hooks/useWebSocket";
-import {useEffect} from "react";
 import SignalBox from "@/root/manage/SignalBox";
+import {useEffect, useState} from "react";
 
-type WSManagerType = {
-    send: (data: WSRequest) => void,
-    ready: boolean
-}
-const WSManager = (): WSManagerType => {
-    const ws = useWebSocket();
-    const eventHandlers: Record<string, Function[]> = {};
-    const send = (data: object) => ws.sendMessage(data)
 
-    useEffect(() => {
-        let action = ws.receivedData?.event
-        SignalBox.trigger(action ?? "ws", ws.receivedData)
-    }, [ws.receivedData]);
-    return {
-        send,
-        ready: ws.isConnected
+class WebSocketManager {
+    private static DEFAULT_WS_URL = "ws://localhost:3500";
+    ws: WebSocket
+    ready: boolean = false
+
+    receivedData: WSResponse | null = null
+
+    constructor() {
+        const ws = new WebSocket(WebSocketManager.DEFAULT_WS_URL);
+        this.ws = ws
+
+        this.ws.onopen = () => {
+            console.log("WebSocket Connected");
+            this.ready = true;
+        };
+
+        this.ws.onclose = () => {
+            console.log("WebSocket Disconnected");
+            this.ready = false;
+        };
+
+        ws.onmessage = async (event) => {
+            try {
+                let text;
+                if (event.data instanceof Blob) {
+                    text = await event.data.text()
+                } else
+                    text = event.data
+                this.receivedData = JSON.parse(text);
+
+                this.triggerEvent()
+            } catch (error) {
+            }
+        };
+    }
+
+    send = (data: object) => this.sendMessage(data)
+    private sendMessage = (data: object) => {
+        if (this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify(data));
+        }
+    };
+
+    triggerEvent() {
+        let action = this.receivedData?.event
+        alert(action)
+        SignalBox.trigger(action ?? "ws3", this.receivedData)
     }
 }
-export default WSManager

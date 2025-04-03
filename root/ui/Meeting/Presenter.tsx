@@ -1,32 +1,56 @@
 "use client";
-import React, { useEffect } from "react";
-import useWebSocket from "@/root/hooks/useWebSocket";
+import React, {useEffect, useRef} from "react";
+import {useWebSocket} from "@/root/context/WebSocketContext";
+import {acc} from "@/root/manage/useUserManager";
 
 const Presenter: React.FC = () => {
-  const { sendMessage } = useWebSocket("ws://localhost:3500");
-
-  const handleScroll = () => {
-    const scrollPercent =
-      (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-    sendMessage({ event: "scroll", scroll_percent: scrollPercent });
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    const xPercent = (e.clientX / window.innerWidth) * 100;
-    const yPercent = (e.clientY / window.innerHeight) * 100;
-    sendMessage({ event: "cursor_move", x_percent: xPercent, y_percent: yPercent });
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("mousemove", handleMouseMove);
+    const ws = useWebSocket();
+    const containerRef = useRef<HTMLDivElement>(null);
+    const handleScroll = () => {
+        const scrollPercent =
+            (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+        ws.send({
+            event: "scroll",
+            action: "new",
+            identity: acc.user()?.uid ?? "",
+            data: {
+                scroll_percent: scrollPercent
+            }
+        })
+        // ws.send({ event: "scroll",  });
     };
-  }, []);
 
-  return <div className="h-screen w-full overflow-auto bg-gray-100">Presenting...</div>;
+    const handleMouseMove = (e: MouseEvent) => {
+        if (!containerRef.current) return;
+
+        const rect = containerRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+const aspectRatio = rect.width / rect.height;
+        const xPercent = (x / rect.width) * 100;
+        const yPercent = (y / rect.height) * 100
+
+
+        ws.send({
+            event: "cursor_move",
+            action: "new",
+            identity: acc.user()?.uid ?? "",
+            data: {
+                x_percent: xPercent, y_percent: yPercent, aspect_ratio: aspectRatio,
+            }
+        })
+    };
+
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        window.addEventListener("mousemove", handleMouseMove);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("mousemove", handleMouseMove);
+        };
+    }, []);
+
+    return <div ref={containerRef} className="size-full rounded overflow-auto bg-gray-100">Presenting...</div>;
 };
 
 export default Presenter;

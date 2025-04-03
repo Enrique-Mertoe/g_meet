@@ -1,37 +1,54 @@
 "use client";
 import React, {useEffect, useRef} from "react";
-import useWebSocket from "@/root/hooks/useWebSocket";
+import {useWebSocket} from "@/root/context/WebSocketContext";
+import {useUserManager} from "@/root/manage/useUserManager";
+import SignalBox from "@/root/manage/SignalBox";
 
 const Viewer: React.FC = () => {
-    const {isConnected} = useWebSocket("ws://localhost:3500");
+    const ws = useWebSocket();
+    const user = useUserManager()
     const cursorRef = useRef<HTMLDivElement>(null);
+     const containerRef = useRef<HTMLDivElement>(null);
+    const hScroll = (info: WSResponse) => {
+        let data = info.data as PresenterScroll
+        window.scrollTo({
+            top: (data.scroll_percent / 100) * (document.body.scrollHeight - window.innerHeight),
+            behavior: "smooth",
+        });
+    }
+    const hCMove = (info: WSResponse) => {
 
+        let data = info.data as PresenterMouse
+        if (!cursorRef.current || !containerRef.current) return;
+        cursorRef.current.style.left = `${data.x_percent}%`;
+        cursorRef.current.style.top = `${data.y_percent}%`;
+        containerRef.current.style.aspectRatio = String(data.aspect_ratio)
+        console.log(data)
+    }
     useEffect(() => {
-        const ws = new WebSocket("ws://localhost:3500");
-
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-
-            if (data.event === "scroll") {
-                window.scrollTo({
-                    top: (data.scroll_percent / 100) * (document.body.scrollHeight - window.innerHeight),
-                    behavior: "smooth",
-                });
-            }
-
-            if (data.event === "cursor_move" && cursorRef.current) {
-                cursorRef.current.style.left = `${data.x_percent}%`;
-                cursorRef.current.style.top = `${data.y_percent}%`;
-            }
-        };
-
-        return () => ws.close();
+        SignalBox.on("scroll", hScroll)
+        SignalBox.on("cursor_move", hCMove)
+        // SignalBox.on(event) => {
+        //     const data = JSON.parse(event.data);
+        //
+        //     if (data.event === "scroll") {
+        //
+        //     }
+        //
+        //     if (data.event === "cursor_move" && cursorRef.current) {
+        //
+        //     }
+        // };
+        return () => {
+            SignalBox.off("scroll", hScroll)
+            SignalBox.off("cursor_move", hCMove)
+        }
     }, []);
 
     return (
-        <div className="relative h-screen w-full overflow-auto bg-white">
+        <div ref={containerRef} className="relative w-full overflow-auto bg-white">
             <div ref={cursorRef} className="absolute w-4 h-4 bg-red-500 rounded-full opacity-75"></div>
-            Viewing...
+            Viewing... as {user.accountType}
         </div>
     );
 };
