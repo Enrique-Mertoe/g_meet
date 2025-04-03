@@ -2,7 +2,7 @@ import React from "react";
 
 declare interface DetailWindowHandler {
     title: string,
-    view: React.ReactNode,
+    view: React.FC,
     key: string
 }
 

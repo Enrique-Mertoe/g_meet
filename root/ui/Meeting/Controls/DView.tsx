@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect} from "react";
 import {sdM} from "@/root/ui/Meeting/DetailWindow/DetailScreen";
 import InfoPanel from "@/root/ui/Meeting/DetailWindow/InfoPanel";
 import ChatPanel from "@/root/ui/Meeting/DetailWindow/ChatPanel";
@@ -29,6 +29,7 @@ const DView = () => {
                 />
                 <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"People"} isActive={true}
                              onClick={() => {
+
                                  sdM.toggleMode(ParticipantsPanel().create())
                              }}
                              icon="users"/>

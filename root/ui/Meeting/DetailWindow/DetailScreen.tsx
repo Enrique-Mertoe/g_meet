@@ -3,6 +3,7 @@ import GIcon from "@/root/ui/components/Icons";
 import {Button} from "@/root/ui/components/material-design/button";
 import SignalBox from "@/root/manage/SignalBox";
 import {DetailScreenHandler, DetailWindowHandler} from "@/root/ui/Meeting/DetailWindow/DetailWindowHandler";
+import {Chat} from "@/root/manage/ChatManager";
 
 
 const DetailScreen: React.FC = () => {
@@ -16,7 +17,7 @@ const DetailScreen: React.FC = () => {
             if (timeoutRef.current) {
                 clearTimeout(timeoutRef.current); // Cancel any ongoing timeout
             }
-
+            Chat.windowSignal = handler.mode
             if (handler.mode === "on") {
                 setIsVisible(true);
                 timeoutRef.current = setTimeout(() => setIsOpen(true), 10);
@@ -39,11 +40,11 @@ const DetailScreen: React.FC = () => {
 
 
     const titleRef = useRef<HTMLElement>(null)
-    const [content, setContent] = useState<ReactNode>(null)
+    const content = useRef<React.FC>(null)
     const loadData = (handler: DetailWindowHandler) => {
         if (titleRef.current) {
             titleRef.current.textContent = handler.title;
-            setContent(handler.view)
+            content.current = handler.view
         }
     }
 
@@ -64,8 +65,9 @@ const DetailScreen: React.FC = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="vstack grow ">
-                                {content}
+                            <div className="flex flex-col flex-1 overflow-auto">
+
+                                {content.current && <content.current/>}
                             </div>
                         </div>
                     }

@@ -287,7 +287,7 @@ const MainContent: React.FC = ({}) => {
     let userManager = useUserManager();
     let ws = WSManager();
     useEffect(() => {
-        if (acc.account()) {
+        if (acc.account() && ws.ready) {
             ws.send({
                 event: "connection",
                 data: {},

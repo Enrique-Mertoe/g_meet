@@ -1019,15 +1019,13 @@ body {
 
 .imessage {
   background-color: #fff;
-  border: 1px solid #e5e5ea;
-  border-radius: 0.25rem;
   display: flex;
   flex-direction: column;
   font-family: "SanFrancisco";
   font-size: 1.25rem;
   margin: 0 auto 1rem;
   max-width: 600px;
-  padding: 0.5rem 1.5rem;
+  padding: 0 1.5rem;
 }
 
 .imessage p {
@@ -1129,4 +1127,13 @@ p[class^="from-"].emoji::before {
 
 .margin-t_one {
   margin-top: 1rem !important;
+}
+
+.sb-mini::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sb-mini::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 2.25rem;
 }

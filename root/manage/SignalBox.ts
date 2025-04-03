@@ -6,6 +6,7 @@ class SignalBox {
      * Attach an event listener.
      */
     static on(action: string, handler: Function): void {
+
         if (!this.eventHandlers[action]) {
             this.eventHandlers[action] = [];
         }
