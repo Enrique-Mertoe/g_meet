@@ -1,5 +1,6 @@
 import ComponentWrapper, {MainContent} from "@/root/ui/components/Layout/ComponentWrapper";
 import {WebSocketProvider} from "@/root/context/WebSocketContext";
+import {Suspense} from "react";
 
 export default function Home() {
 
@@ -9,7 +10,9 @@ export default function Home() {
             <main className={"h-full w-full"}>
                 <WebSocketProvider>
                     <ComponentWrapper>
-                        <MainContent/>
+                        <Suspense>
+                            <MainContent/>
+                        </Suspense>
                     </ComponentWrapper>
                 </WebSocketProvider>
             </main>
