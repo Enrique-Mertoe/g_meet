@@ -26,19 +26,24 @@ const Presenter: React.FC = () => {
         const rect = containerRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-const aspectRatio = rect.width / rect.height;
-        const xPercent = (x / rect.width) * 100;
-        const yPercent = (y / rect.height) * 100
 
+        if (x >= 0 && x-4 <= rect.width && y >= 0 && y+4 <= rect.height) {
+            const aspectRatio = rect.width / rect.height;
+            const xPercent = (x / rect.width) * 100;
+            const yPercent = (y / rect.height) * 100;
 
-        ws.send({
-            event: "cursor_move",
-            action: "new",
-            identity: acc.user()?.uid ?? "",
-            data: {
-                x_percent: xPercent, y_percent: yPercent, aspect_ratio: aspectRatio,
-            }
-        })
+            // Send the data only when the cursor is inside the container
+            ws.send({
+                event: "cursor_move",
+                action: "new",
+                identity: acc.user()?.uid ?? "",
+                data: {
+                    x_percent: xPercent,
+                    y_percent: yPercent,
+                    aspect_ratio: aspectRatio,
+                },
+            });
+        }
     };
 
     useEffect(() => {
