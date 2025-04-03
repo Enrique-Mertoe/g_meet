@@ -26,68 +26,81 @@ const MainContent: React.FC = ({}) => {
     const wsm = useWebSocket();
     const userDetails = [
             {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             },
             {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             },
             {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
                 micOn: false
             }, {
+                id: "c",
                 name: "John Doe",
                 avatar: "/avatar.jpg",
                 isSpeaking: true,
@@ -297,6 +310,8 @@ const MainContent: React.FC = ({}) => {
 
     const itemsToShow = screenItems.slice(0, itemsPerRow * rows);
 
+    // @ts-ignore
+    // @ts-ignore
     return (
         <>
 
