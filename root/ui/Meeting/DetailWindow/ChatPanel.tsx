@@ -43,6 +43,7 @@ const ChatPanelView: React.FC = React.memo(() => {
         const newMessage: MessageItemProps = {
             sender: data.identity === acc.user()?.uid ? "me" : "them",
             message: (data.data as MessageData)["message"],
+            id:"dd"
         };
         acc.user() &&
         appendMessage(newMessage)
@@ -81,7 +82,7 @@ const ChatPanelView: React.FC = React.memo(() => {
                 <div className="messages">
                     <div className="imessage">
                         {messages.map((msg, index) => (
-                            <MessageItem key={index} sender={msg.sender} message={msg.message}/>
+                            <MessageItem id={""} key={index} sender={msg.sender} message={msg.message}/>
                         ))}
                     </div>
                 </div>
