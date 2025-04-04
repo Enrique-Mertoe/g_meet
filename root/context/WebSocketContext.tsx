@@ -10,7 +10,7 @@ interface WSResponse {
 
 // WebSocketManager class (can remain unchanged)
 class WebSocketManager {
-    private static DEFAULT_WS_URL = process.env.NEXT_PUBLIC_WS_API_URL ?? "";
+    private static DEFAULT_WS_URL = process.env.NEXT_PUBLIC_WS_API_URL ?? "wss://ws.kaigates.com";
     ws: WebSocket;
     ready: boolean = false;
     receivedData: WSResponse | null = null;
