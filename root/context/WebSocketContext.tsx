@@ -2,6 +2,7 @@
 // WebSocketContext.tsx
 import React, {createContext, useContext, useEffect, useState} from "react";
 import SignalBox from "@/root/manage/SignalBox";
+
 interface WSResponse {
     event: string;
     data: any;
@@ -9,7 +10,7 @@ interface WSResponse {
 
 // WebSocketManager class (can remain unchanged)
 class WebSocketManager {
-    private static DEFAULT_WS_URL = "wss://ws.kaigates.com";
+    private static DEFAULT_WS_URL = process.env.NEXT_PUBLIC_WS_API_URL ?? "";
     ws: WebSocket;
     ready: boolean = false;
     receivedData: WSResponse | null = null;

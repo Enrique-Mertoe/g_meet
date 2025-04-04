@@ -10,6 +10,7 @@ import {acc} from "@/root/manage/useUserManager";
 import {useWebSocket} from "@/root/context/WebSocketContext";
 import Interceptors from "undici-types/interceptors";
 import {Chat} from "@/root/manage/ChatManager";
+import {generateMeetID} from "@/root/utility";
 
 const ChatPanelView: React.FC = React.memo(() => {
     const [message, setInputValue] = useState("")
@@ -23,7 +24,7 @@ const ChatPanelView: React.FC = React.memo(() => {
                 event: "message",
                 action: "new",
                 identity: acc.user()?.uid ?? "",
-                data: {message}
+                data: {message, id: generateMeetID()}
             })
 
             formRef.current?.reset()
@@ -31,19 +32,16 @@ const ChatPanelView: React.FC = React.memo(() => {
         }
     }
     const appendMessage = (newMessage: MessageItemProps) => {
-        // setMessages(prevMessages => {
-        //     return [newMessage]
-        // });'
         setMSG(prev => [...prev, newMessage])
-
         setNewMessage(prev => ++prev)
     };
 
     const handleMessageSignal = (data: WSResponse) => {
+        let msg = data.data as MessageItemProps;
         const newMessage: MessageItemProps = {
             sender: data.identity === acc.user()?.uid ? "me" : "them",
-            message: (data.data as MessageData)["message"],
-            id:"dd"
+            message: msg.message,
+            id: msg.id
         };
         acc.user() &&
         appendMessage(newMessage)
@@ -58,6 +56,7 @@ const ChatPanelView: React.FC = React.memo(() => {
         };
     }, []);
 
+    let ids: string | string[] = []
     return (
         <div className={"vstack h-full"}>
             <div className="flex-1 overflow-y-auto sb-mini flex gap-2 flex-col-reverse p-2 ">
@@ -81,9 +80,11 @@ const ChatPanelView: React.FC = React.memo(() => {
                 </div>
                 <div className="messages">
                     <div className="imessage">
-                        {messages.map((msg, index) => (
-                            <MessageItem id={""} key={index} sender={msg.sender} message={msg.message}/>
-                        ))}
+                        {messages.map((msg, index) => {
+                            if (ids.includes(msg.id)) return;
+                            ids.push(msg.id)
+                            return <MessageItem id={""} key={msg.id} sender={msg.sender} message={msg.message}/>
+                        })}
                     </div>
                 </div>
 
@@ -100,10 +101,18 @@ const ChatPanelView: React.FC = React.memo(() => {
                             className={"!border-0 !ring-0 placeholder:text-gray-700 !bg-transparent"}/>
                     </div>
                     <Button
+                        icon={<GIcon color={"text-gray-800"} name={"paperclip"}/>}
+                        className={"!rounded-full hover:bg-gray-100 border-0 !p-2"}
+
+                    />
+                    <Button
                         icon={<GIcon name={"send-horizontal"} color={"text-blue-500"}/>}
-                        className={"spect-square !rounded-full !p-2"}
+                        className={"spect-square border-0 !rounded-full !p-2"}
                         type={"submit"}
                     />
+                </div>
+                <div className="hstack px-3 py-1">
+
                 </div>
             </form>
         </div>

@@ -28,5 +28,10 @@ declare interface PresenterScroll {
 declare interface PresenterMouse {
     x_percent: number;
     y_percent: number;
-    aspect_ratio:number
+    aspect_ratio: number
+}
+
+declare interface MessageCarrier {
+    id: string;
+    message: string;
 }
