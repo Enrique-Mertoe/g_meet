@@ -1,22 +1,24 @@
 import ComponentWrapper, {MainContent} from "@/root/ui/components/Layout/ComponentWrapper";
-import {WebSocketProvider} from "@/root/context/WebSocketContext";
 import {Suspense} from "react";
+import AppInitProvider from "@/root/context/providers/AppInitProvider";
+import AppContext from "@/root/context/AppContext";
 
 export default function Home() {
 
     return (
-        <div
-            className="[family-name:var(--font-geist-sans)] h-screen w-screen">
-            <main className={"h-full w-full"}>
-                <WebSocketProvider>
+        <AppContext>
+            <div
+                className="[family-name:var(--font-geist-sans)] h-screen w-screen">
+                <main className={"h-full w-full"}>
                     <ComponentWrapper>
                         <Suspense>
                             <MainContent/>
                         </Suspense>
                     </ComponentWrapper>
-                </WebSocketProvider>
-            </main>
-        </div>
+
+                </main>
+            </div>
+        </AppContext>
     );
 }
 

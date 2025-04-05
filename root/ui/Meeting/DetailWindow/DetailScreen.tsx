@@ -4,6 +4,7 @@ import {Button} from "@/root/ui/components/material-design/button";
 import SignalBox from "@/root/manage/SignalBox";
 import {DetailScreenHandler, DetailWindowHandler} from "@/root/ui/Meeting/DetailWindow/DetailWindowHandler";
 import {Chat} from "@/root/manage/ChatManager";
+import ChatPanel, {ChatPanelView} from "@/root/ui/Meeting/DetailWindow/ChatPanel";
 
 
 const DetailScreen: React.FC = () => {
@@ -67,7 +68,8 @@ const DetailScreen: React.FC = () => {
                             </div>
                             <div className="flex flex-col flex-1 overflow-auto">
 
-                                {content.current && <content.current/>}
+                                {/*{content.current && <content.current/>}*/}
+                                <ChatPanelView/>
                             </div>
                         </div>
                     }

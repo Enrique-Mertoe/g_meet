@@ -1,11 +1,11 @@
 "use client";
 import React, {useEffect, useRef} from "react";
-import {useWebSocket} from "@/root/context/WebSocketContext";
+// import {useWebSocket} from "@/root/context/WebSocketContext";
 import {useUserManager} from "@/root/manage/useUserManager";
 import SignalBox from "@/root/manage/SignalBox";
 
 const Viewer: React.FC = () => {
-    const ws = useWebSocket();
+    // const ws = useWebSocket();
     const user = useUserManager()
     const cursorRef = useRef<HTMLDivElement>(null);
      const containerRef = useRef<HTMLDivElement>(null);

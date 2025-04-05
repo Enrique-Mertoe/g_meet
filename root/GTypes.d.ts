@@ -31,7 +31,28 @@ declare interface PresenterMouse {
     aspect_ratio: number
 }
 
-declare interface MessageCarrier {
+declare interface ChatInfo {
     id: string;
     message: string;
+    sender: string;
+    file?: any
+}
+
+declare interface WSEndpoint {
+    send: (request: WSRequest) => void
+    onMessage: (handler: (response: WSResponse) => void) => void
+    ready: () => boolean
+    close: () => boolean
+}
+
+declare interface ChatContextProvider {
+    send: (data: ChatInfo) => void;
+    onReceive: (handler: (chat: ChatInfo) => void) => void;
+    currentChats: () => ChatInfo[]
+}
+
+declare interface FileInfo {
+    name: string;
+    type: string;
+    data:ArrayBuffer | string;
 }

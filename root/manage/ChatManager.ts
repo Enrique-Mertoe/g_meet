@@ -4,7 +4,7 @@ import {absolutePathToPage} from "next/dist/shared/lib/page-path/absolute-path-t
 import {generateMeetID} from "@/root/utility";
 
 class ChatManager {
-    private _chats: Record<string, MessageItemProps> = {}
+    private _chats: MessageItemProps[] = []
     windowSignal: "on" | "off" = "off"
 
     constructor() {
@@ -17,7 +17,7 @@ class ChatManager {
             message: (data.data as MessageData)["message"],
             id: generateMeetID()
         };
-        this._chats[newMessage.id] = newMessage
+        this._chats.push(newMessage)
         this._sendSignal(newMessage)
 
     };

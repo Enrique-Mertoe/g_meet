@@ -1,22 +1,21 @@
 "use client";
 import React, {useEffect, useRef} from "react";
-import {useWebSocket} from "@/root/context/WebSocketContext";
 import {acc} from "@/root/manage/useUserManager";
 
 const Presenter: React.FC = () => {
-    const ws = useWebSocket();
+    // const ws = useWebSocket();
     const containerRef = useRef<HTMLDivElement>(null);
     const handleScroll = () => {
         const scrollPercent =
             (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-        ws.send({
-            event: "scroll",
-            action: "new",
-            identity: acc.user()?.uid ?? "",
-            data: {
-                scroll_percent: scrollPercent
-            }
-        })
+        // ws.send({
+        //     event: "scroll",
+        //     action: "new",
+        //     identity: acc.user()?.uid ?? "",
+        //     data: {
+        //         scroll_percent: scrollPercent
+        //     }
+        // })
         // ws.send({ event: "scroll",  });
     };
 
@@ -33,16 +32,16 @@ const Presenter: React.FC = () => {
             const yPercent = (y / rect.height) * 100;
 
             // Send the data only when the cursor is inside the container
-            ws.send({
-                event: "cursor_move",
-                action: "new",
-                identity: acc.user()?.uid ?? "",
-                data: {
-                    x_percent: xPercent,
-                    y_percent: yPercent,
-                    aspect_ratio: aspectRatio,
-                },
-            });
+            // ws.send({
+            //     event: "cursor_move",
+            //     action: "new",
+            //     identity: acc.user()?.uid ?? "",
+            //     data: {
+            //         x_percent: xPercent,
+            //         y_percent: yPercent,
+            //         aspect_ratio: aspectRatio,
+            //     },
+            // });
         }
     };
 

@@ -7,54 +7,67 @@ import ToggleSwitch from "@/root/ui/components/material-design/ToggleSwitch";
 import MessageItem from "@/root/ui/Meeting/Messaging/MessageItem";
 import SignalBox from "@/root/manage/SignalBox";
 import {acc} from "@/root/manage/useUserManager";
-import {useWebSocket} from "@/root/context/WebSocketContext";
 import Interceptors from "undici-types/interceptors";
 import {Chat} from "@/root/manage/ChatManager";
 import {generateMeetID} from "@/root/utility";
+import {useChat} from "@/root/context/providers/ChatProvider";
+import ms from "ms";
+import {FilePondFile} from "filepond";
 
 const ChatPanelView: React.FC = React.memo(() => {
+    const chat = useChat()
     const [message, setInputValue] = useState("")
-    let [messages, setMSG] = useState<MessageItemProps[]>([]);
+    let [messages, setMSG] = useState<ChatInfo[]>([]);
+    const [file, setFile] = useState<File | null>(null);
+    const [files, setFiles] = useState<File[]>([]);
     const [newMessage, setNewMessage] = useState(0);
     const formRef = useRef<HTMLFormElement | null>(null)
-    const wsm = useWebSocket();
-    const submit = () => {
-        if (acc.user() && message) {
-            wsm.send({
-                event: "message",
-                action: "new",
-                identity: acc.user()?.uid ?? "",
-                data: {message, id: generateMeetID()}
-            })
+    const fileInputRef = useRef<HTMLInputElement | null>(null)
 
+    useEffect(() => {
+        if (!chat) return;
+        chat.onReceive(data => {
+            data.sender = data.sender === acc.user()?.uid ? "me" : "them"
+            setMSG(prev => [...prev, data])
+        })
+    }, [chat]);
+    const submit = () => {
+        if (message || file) {
+            let msg = message;
+            processFile(file, info => {
+                chat?.send({
+                        message: msg, id: generateMeetID(),
+                        sender: acc.user()?.uid ?? "", file
+                    }
+                )
+            });
             formRef.current?.reset()
             setInputValue("")
+            setFile(null);
         }
     }
-    const appendMessage = (newMessage: MessageItemProps) => {
-        setMSG(prev => [...prev, newMessage])
-        setNewMessage(prev => ++prev)
-    };
 
-    const handleMessageSignal = (data: WSResponse) => {
-        let msg = data.data as MessageItemProps;
-        const newMessage: MessageItemProps = {
-            sender: data.identity === acc.user()?.uid ? "me" : "them",
-            message: msg.message,
-            id: msg.id
+    const processFile = (file: File | null, cb: (fileInfo?: FileInfo) => void) => {
+        if (!file) return cb()
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const fileData = reader.result;
+
+            if (fileData) {
+                cb({
+                    data: fileData,
+                    name: file.name,
+                    type: file.type,
+                });
+            }
         };
-        acc.user() &&
-        appendMessage(newMessage)
 
+        reader.readAsArrayBuffer(file);
     }
-    useEffect(() => {
-        acc.user() &&
-        SignalBox.on("message", handleMessageSignal)
-        return () => {
 
-            SignalBox.off("message", handleMessageSignal);
-        };
-    }, []);
+    const handleFileChange = (fileItems: FilePondFile[]) => {
+        setFiles(fileItems.map(fileItem => fileItem.file)); // Store the files selected in FilePond
+    };
 
     let ids: string | string[] = []
     return (
@@ -81,8 +94,8 @@ const ChatPanelView: React.FC = React.memo(() => {
                 <div className="messages">
                     <div className="imessage">
                         {messages.map((msg, index) => {
-                            if (ids.includes(msg.id)) return;
-                            ids.push(msg.id)
+                            // if (ids.includes(msg.id)) return;
+                            // ids.push(msg.id)
                             return <MessageItem id={""} key={msg.id} sender={msg.sender} message={msg.message}/>
                         })}
                     </div>
@@ -93,6 +106,17 @@ const ChatPanelView: React.FC = React.memo(() => {
                 e.preventDefault()
                 submit()
             }}>
+                <input
+                    type="file"
+                    ref={fileInputRef} // File input ref to trigger the click
+                    accept=".doc,.pdf,.png,.jpg,.jpeg,.gif" // Acceptable file types
+                    style={{display: "none"}} // Hidden input
+                    onChange={(e) => {
+                        if (e.target.files) {
+                            setFile(e.target.files[0]); // Set selected file
+                        }
+                    }}
+                />
                 <div className="rounded-full hstack gap-2 bg-[#f1f3f4] p-1">
                     <div className={"grow"}>
                         <TextInput
@@ -101,8 +125,14 @@ const ChatPanelView: React.FC = React.memo(() => {
                             className={"!border-0 !ring-0 placeholder:text-gray-700 !bg-transparent"}/>
                     </div>
                     <Button
+                        type={"button"}
                         icon={<GIcon color={"text-gray-800"} name={"paperclip"}/>}
                         className={"!rounded-full hover:bg-gray-100 border-0 !p-2"}
+                        onClick={() => {
+                            if (fileInputRef.current) {
+                                fileInputRef.current.click();
+                            }
+                        }}
 
                     />
                     <Button
@@ -145,6 +175,7 @@ class Builder {
     }
 }
 
+export {ChatPanelView}
 
 export default function () {
     return Builder.instance();

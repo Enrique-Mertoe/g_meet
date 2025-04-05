@@ -5,7 +5,9 @@ import DetailScreen from "@/root/ui/Meeting/DetailWindow/DetailScreen";
 import GControl from "@/root/ui/Meeting/Controls/GControl";
 import PresentationDisplay, {PSEvent} from "@/root/ui/Meeting/PresentationDisplay";
 import {acc, useUserManager} from "@/root/manage/useUserManager";
-import {useWebSocket, WebSocketProvider} from "@/root/context/WebSocketContext";
+import {DetailScreenProvider} from "@/root/context/providers/DetailScreenProvider";
+import DScreenContext from "@/root/context/DScreenContext";
+// import {useWebSocket, WebSocketProvider} from "@/root/context/WebSocketContext";
 
 const ComponentWrapper: React.FC<{ children: React.ReactNode }> = ({children}) => {
     return (
@@ -23,7 +25,7 @@ const ComponentWrapper: React.FC<{ children: React.ReactNode }> = ({children}) =
 export default ComponentWrapper;
 
 const MainContent: React.FC = ({}) => {
-    const wsm = useWebSocket();
+    // const wsm = useWebSocket();
     const userDetails = [
             {
                 uid: "c",
@@ -298,14 +300,14 @@ const MainContent: React.FC = ({}) => {
     }, [isOpen]);
 
     useEffect(() => {
-        if (acc.account() && wsm.ready) {
-            wsm.send({
-                event: "connection",
-                data: {},
-                identity: "hvjv",
-                action: "check"
-            })
-        }
+        // if (acc.account() && wsm.ready) {
+        //     wsm.send({
+        //         event: "connection",
+        //         data: {},
+        //         identity: "hvjv",
+        //         action: "check"
+        //     })
+        // }
     }, []);
 
     const itemsToShow = screenItems.slice(0, itemsPerRow * rows);
@@ -371,7 +373,9 @@ const MainContent: React.FC = ({}) => {
                     </div>
 
 
-                    <DetailScreen/>
+                    <DScreenContext>
+                        <DetailScreen/>
+                    </DScreenContext>
                 </div>
                 <GControl/>
             </div>
