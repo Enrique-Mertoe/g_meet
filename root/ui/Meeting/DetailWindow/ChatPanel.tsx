@@ -66,7 +66,7 @@ const ChatPanelView: React.FC = React.memo(() => {
     }
 
     const handleFileChange = (fileItems: FilePondFile[]) => {
-        setFiles(fileItems.map(fileItem => fileItem.file)); // Store the files selected in FilePond
+        // setFiles(fileItems.map(fileItem => fileItem.file)); // Store the files selected in FilePond
     };
 
     let ids: string | string[] = []
