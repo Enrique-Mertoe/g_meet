@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {ChatInfo} from "@/root/GTypes";
 
 const MessageItem: React.FC<ChatInfo> = ({sender, message}) => {
     const _from = sender === "me" ? "from-me" : "from-them";

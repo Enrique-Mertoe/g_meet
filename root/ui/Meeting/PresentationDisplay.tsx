@@ -6,9 +6,10 @@ import {sSm} from "@/root/manage/ScreenShare/Screenshare";
 import Presenter from "@/root/ui/Meeting/Presenter";
 import {useAccount, useUserManager} from "@/root/manage/useUserManager";
 import Viewer from "@/root/ui/Meeting/Viewer";
+import {Closure} from "@/root/GTypes";
 
 export interface PSEvent {
-    on: (action: string, handler: Function) => void;
+    on: (action: string, handler: Closure) => void;
 }
 
 const PScreen: React.FC<{
@@ -16,19 +17,19 @@ const PScreen: React.FC<{
     presenting?: boolean;
     listener: (event: PSEvent) => void
 
-}> = React.memo(({presenting, listener}) => {
+}> = React.memo(function PScreen({presenting, listener}){
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const account = useAccount();
-    let eventHandlers: Record<string, Function[]> = {};
-    let ev = {
-        on: (action: string, handler: Function) => {
+    const eventHandlers: Record<string, Closure[]> = {};
+    const ev = {
+        on: (action: string, handler: Closure) => {
             if (!eventHandlers[action]) {
                 eventHandlers[action] = [];
             }
             eventHandlers[action].push(handler);
         },
-        trigger(action: string, ...args: any[]): void {
+        trigger(action: string, ...args: unknown[]): void {
             eventHandlers[action]?.forEach(handler => handler(...args));
         }
     }

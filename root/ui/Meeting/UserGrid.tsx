@@ -65,7 +65,7 @@ const UserGrid: React.FC<UserGridProps> = ({
         let calculatedRows = Math.floor((availableHeight - totalGapHeight) / itemHeight);
 
         // Adjust item height if needed
-        let threshold = (calculatedRows * (itemHeight + gap)) / availableHeight
+        const threshold = (calculatedRows * (itemHeight + gap)) / availableHeight
         if (threshold > .5) {
             calculatedRows += 1
         }
