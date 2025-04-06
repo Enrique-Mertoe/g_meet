@@ -5,19 +5,19 @@ import {DetailWindowHandler} from "@/root/ui/Meeting/DetailWindow/DetailWindowHa
 import Tooltip from "@/root/ui/components/material-design/Tooltip";
 import {TextInput} from "@/root/ui/components/material-design/Input";
 
-const ParticipantsView: React.FC = () => {
+const ParticipantsView: React.FC = React.memo(() => {
 
     return (
         <div className={"vstack p-2 rounded p-3"}>
             <div>
                 <Button
-                icon={
-                    <GIcon name={"user-round-plus"} color={"text-current"} size={16}/>
-                }
-                text={"Add people"}
-                design={"primary-soft"}
-                className={"!rounded-full mb-2 !p-2 !px-4 text-sm"}
-            />
+                    icon={
+                        <GIcon name={"user-round-plus"} color={"text-current"} size={16}/>
+                    }
+                    text={"Add people"}
+                    design={"primary-soft"}
+                    className={"!rounded-full mb-2 !p-2 !px-4 text-sm"}
+                />
             </div>
 
             <div
@@ -49,7 +49,7 @@ const ParticipantsView: React.FC = () => {
             </div>
         </div>
     )
-}
+})
 
 class Builder {
     private readonly view: React.FC

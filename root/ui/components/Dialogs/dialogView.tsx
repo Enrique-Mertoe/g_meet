@@ -1,10 +1,15 @@
 "use client"
 import React, {useEffect, useState} from "react";
+import {useDialog} from "@/root/ui/components/Dialogs/DialogContext";
 
 
 export interface DialogEventListener {
     onDismissed: (callback: () => void) => void
     feedbackHandler: (handler?: (...ags: any) => void) => void
+}
+
+export interface ModalEventListener {
+    onDismiss: (callback: () => void) => void
 }
 
 export interface DHook {
@@ -23,6 +28,8 @@ const DialogView: React.FC<{
                      children
                  }) => {
     const [visible, setVisible] = useState(false);
+
+
     useEffect(() => {
         const timer = setTimeout(() => {
             setVisible(true);

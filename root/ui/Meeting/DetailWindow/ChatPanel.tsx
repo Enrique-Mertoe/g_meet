@@ -1,39 +1,44 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {Button} from "@/root/ui/components/material-design/button";
 import GIcon from "@/root/ui/components/Icons";
 import {DetailWindowHandler} from "@/root/ui/Meeting/DetailWindow/DetailWindowHandler";
 import {TextInput} from "@/root/ui/components/material-design/Input";
 import ToggleSwitch from "@/root/ui/components/material-design/ToggleSwitch";
 import MessageItem from "@/root/ui/Meeting/Messaging/MessageItem";
-import SignalBox from "@/root/manage/SignalBox";
 import {acc} from "@/root/manage/useUserManager";
-import Interceptors from "undici-types/interceptors";
-import {Chat} from "@/root/manage/ChatManager";
 import {generateMeetID} from "@/root/utility";
 import {useChat} from "@/root/context/providers/ChatProvider";
-import ms from "ms";
-import {FilePondFile} from "filepond";
+import {useFilePicker} from "@/root/hooks/useFilePicker";
+import {ChatInfo, FileInfo} from "@/root/GTypes";
 
-const ChatPanelView: React.FC = React.memo(() => {
+const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
     const chat = useChat()
+
+    const filePicker = useFilePicker()
     const [message, setInputValue] = useState("")
-    let [messages, setMSG] = useState<ChatInfo[]>([]);
+    const [messages, setMSG] = useState<ChatInfo[]>([]);
     const [file, setFile] = useState<File | null>(null);
     const [files, setFiles] = useState<File[]>([]);
-    const [newMessage, setNewMessage] = useState(0);
+    const [, setNewMessage] = useState(0);
     const formRef = useRef<HTMLFormElement | null>(null)
     const fileInputRef = useRef<HTMLInputElement | null>(null)
-
+    const msgListener = useCallback((data: ChatInfo) => {
+        data.sender = data.sender === acc.user()?.uid ? "me" : "them"
+        // setMSG(prev => [...prev, data])
+        setNewMessage(prevState => prevState + 1)
+    }, [])
     useEffect(() => {
         if (!chat) return;
-        chat.onReceive(data => {
-            data.sender = data.sender === acc.user()?.uid ? "me" : "them"
-            setMSG(prev => [...prev, data])
-        })
-    }, [chat]);
+        chat.addListener(msgListener);
+        setMSG(chat.currentChats())
+        return () => {
+            setMSG([])
+            chat.removeListener(msgListener)
+        };
+    }, [chat, msgListener]);
     const submit = () => {
         if (message || file) {
-            let msg = message;
+            const msg = message;
             processFile(file, info => {
                 chat?.send({
                         message: msg, id: generateMeetID(),
@@ -65,7 +70,10 @@ const ChatPanelView: React.FC = React.memo(() => {
         reader.readAsArrayBuffer(file);
     }
 
-    const handleFileChange = (fileItems: FilePondFile[]) => {
+    const handleFilePicker = () => {
+        filePicker.pick(media => {
+
+        })
         // setFiles(fileItems.map(fileItem => fileItem.file)); // Store the files selected in FilePond
     };
 
@@ -128,11 +136,7 @@ const ChatPanelView: React.FC = React.memo(() => {
                         type={"button"}
                         icon={<GIcon color={"text-gray-800"} name={"paperclip"}/>}
                         className={"!rounded-full hover:bg-gray-100 border-0 !p-2"}
-                        onClick={() => {
-                            if (fileInputRef.current) {
-                                fileInputRef.current.click();
-                            }
-                        }}
+                        onClick={() => handleFilePicker()}
 
                     />
                     <Button

@@ -32,7 +32,7 @@ import {
     ArrowRight,
     UserRoundPlus,
     Search,
-    LayoutDashboard, Monitor, FileText
+    LayoutDashboard, Monitor, FileText, CloudUpload, Check
 
 } from "lucide-react";
 import React, {forwardRef} from "react";
@@ -76,11 +76,11 @@ const ICONS: Record<string, LucideIcon> = {
     MessageCircle,
     Smile,
     MoreVertical,
-    PhoneOff,
+    PhoneOff,Check,
     AlertCircle, Info, CheckCircle, AlertTriangle,
     Phone,Paperclip,
     ChevronUp, HelpCircle,
-    Hand,
+    Hand,CloudUpload,
     LockPerson, GLoader,
     Square, Pause, Play, SendHorizontal,
     MessageSquareText,Monitor,FileText,

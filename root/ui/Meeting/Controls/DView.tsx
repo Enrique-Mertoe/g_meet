@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from "react";
+import React from "react";
 import {sdM} from "@/root/ui/Meeting/DetailWindow/DetailScreen";
 import InfoPanel from "@/root/ui/Meeting/DetailWindow/InfoPanel";
 import ChatPanel from "@/root/ui/Meeting/DetailWindow/ChatPanel";
@@ -6,12 +6,7 @@ import ParticipantsPanel from "@/root/ui/Meeting/DetailWindow/ParticipantsPanel"
 import ControlItem from "@/root/ui/Meeting/Controls/ControlItem";
 
 const DView = () => {
-
-    const handleClick = useCallback(() => {
-        sdM.mode(sdM.mode() == "off" ? "on" : "off");
-
-    }, [])
-
+    // const p = useFilePicker();
     return (
         <>
             <div className="w-auto gap-4 bg-dark pe-3 ms-auto rounded-full p-2 flex justify-center items-center">
@@ -34,6 +29,8 @@ const DView = () => {
                              }}
                              icon="users"/>
                 <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"Activities"} isActive={true}
+                             onClick={() => {
+                             }}
                              icon="layout-dashboard"/>
                 <ControlItem tooltip={"Host controls"} colors={"bg-transparent hover:bg-[#333537]"} isActive={true}
                              icon="lock-person"/>

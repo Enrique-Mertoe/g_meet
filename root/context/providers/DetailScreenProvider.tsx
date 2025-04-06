@@ -1,5 +1,4 @@
 import React, {createContext, useContext, useEffect, useRef} from "react";
-import {useSocket} from "@/root/context/providers/SocketProvider";
 
 type ChatContextType = {
     handler: { toggle: (tab: string, view: React.ReactNode) => void }

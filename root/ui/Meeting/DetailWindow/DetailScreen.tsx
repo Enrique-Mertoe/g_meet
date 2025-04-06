@@ -4,7 +4,6 @@ import {Button} from "@/root/ui/components/material-design/button";
 import SignalBox from "@/root/manage/SignalBox";
 import {DetailScreenHandler, DetailWindowHandler} from "@/root/ui/Meeting/DetailWindow/DetailWindowHandler";
 import {Chat} from "@/root/manage/ChatManager";
-import ChatPanel, {ChatPanelView} from "@/root/ui/Meeting/DetailWindow/ChatPanel";
 
 
 const DetailScreen: React.FC = () => {
@@ -26,9 +25,9 @@ const DetailScreen: React.FC = () => {
                 setIsOpen(false);
                 timeoutRef.current = setTimeout(() => setIsVisible(false), 300);
             }
-            setToggle(handler.mode == "on")
-
             handler.data && loadData(handler.data)
+
+            setToggle(handler.mode == "on")
         };
 
         SignalBox.on("screen-details", handler);
@@ -41,11 +40,11 @@ const DetailScreen: React.FC = () => {
 
 
     const titleRef = useRef<HTMLElement>(null)
-    const content = useRef<React.FC>(null)
+    const [Content,sContent] = useState<React.FC|null>(null)
     const loadData = (handler: DetailWindowHandler) => {
         if (titleRef.current) {
             titleRef.current.textContent = handler.title;
-            content.current = handler.view
+            sContent(handler.view)
         }
     }
 
@@ -68,8 +67,8 @@ const DetailScreen: React.FC = () => {
                             </div>
                             <div className="flex flex-col flex-1 overflow-auto">
 
-                                {/*{content.current && <content.current/>}*/}
-                                <ChatPanelView/>
+                                {Content && <Content/>}
+                                {/*<ChatPanelView/>*/}
                             </div>
                         </div>
                     }

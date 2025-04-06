@@ -4,7 +4,7 @@ import GIcon from "@/root/ui/components/Icons";
 import {DetailWindowHandler} from "@/root/ui/Meeting/DetailWindow/DetailWindowHandler";
 import Tooltip from "@/root/ui/components/material-design/Tooltip";
 
-const InfoPanelView: React.FC = () => {
+const InfoPanelView: React.FC = React.memo(() => {
 
     return (
         <div className={"vstack p-2 rounded p-3"}>
@@ -33,7 +33,7 @@ const InfoPanelView: React.FC = () => {
             </div>
         </div>
     )
-}
+});
 
 class Builder {
     private readonly view: React.FC
