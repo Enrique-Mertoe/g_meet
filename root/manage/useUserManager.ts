@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext, useRef} from "react";
+import {useState, useEffect, useRef} from "react";
 import {generateMeetID, generateUsername} from "@/root/utility";
 import {UserInfo} from "@/root/fn";
 import {useSearchParams} from "next/navigation";
@@ -26,7 +26,7 @@ export function useUserManager(): UserParams {
             uid: generateMeetID(),
             name: generateUsername(),
         });
-    }, []);
+    }, [searchParams]);
 
     return {currentUser, accountType};
 }

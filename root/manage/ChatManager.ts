@@ -1,7 +1,7 @@
 import SignalBox from "@/root/manage/SignalBox";
 import {acc} from "@/root/manage/useUserManager";
-import {absolutePathToPage} from "next/dist/shared/lib/page-path/absolute-path-to-page";
 import {generateMeetID} from "@/root/utility";
+import {MessageData, MessageItemProps, WSResponse} from "@/root/GTypes";
 
 class ChatManager {
     private _chats: MessageItemProps[] = []
@@ -23,7 +23,7 @@ class ChatManager {
     };
 
     private handleMessageSignal = (data: WSResponse) => {
-        acc.user() &&
+        if(acc.user())
         this.appendMessage(data)
     }
     messages = () => {
