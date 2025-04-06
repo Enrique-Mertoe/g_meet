@@ -1,11 +1,10 @@
 "use client"
-import React, {RefObject, useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import UserGrid from "@/root/ui/Meeting/UserGrid";
 import DetailScreen from "@/root/ui/Meeting/DetailWindow/DetailScreen";
 import GControl from "@/root/ui/Meeting/Controls/GControl";
 import PresentationDisplay, {PSEvent} from "@/root/ui/Meeting/PresentationDisplay";
-import {acc, useUserManager} from "@/root/manage/useUserManager";
-import {DetailScreenProvider} from "@/root/context/providers/DetailScreenProvider";
+import {useUserManager} from "@/root/manage/useUserManager";
 import DScreenContext from "@/root/context/DScreenContext";
 // import {useWebSocket, WebSocketProvider} from "@/root/context/WebSocketContext";
 
@@ -115,47 +114,48 @@ const MainContent: React.FC = ({}) => {
         };
 
     useUserManager()
-    const [isOpen, setIsOpen] = useState(true);
-    const [isvisible, setIsvisible] = useState(isOpen);
-    const [screenItems, setScreenItems] = useState(userDetails);
-    const [act, setAct] = useState(false);
+    const [isOpen, ] = useState(true);
+    // const [, setIsvisible] = useState(isOpen);
+    const [screenItems, ] = useState(userDetails);
+    // const [act, setAct] = useState(false);
     const [itemsPerRow, setItemsPerRow] = useState(3);
     const [rows, setRows] = useState(3);
-    const [showMore, setShowMore] = useState(false);
-    const [ready, setReady] = useState(false),
-        [iHeight, setIHeight] = useState(0.0);
-    const [itemSize, setItemSize] = useState({width: 200, height: 150});
+    const [, setShowMore] = useState(false);
+    const [, setReady] = useState(false);
+    // [iHeight, setIHeight] = useState(0.0);
+    const [, setItemSize] = useState({width: 200, height: 150});
 
     const containerRef = useRef<HTMLDivElement | null>(null);
 
 
-    const open = () => {
-        setIsvisible(true)
-        setTimeout(() => setIsOpen(true), 50);
-        // setScreenItems(2);
-    }
-    const close = () => {
-        setIsOpen(prev => {
-            if (!prev) return prev;
-            // setScreenItems(3);
-            setIsOpen(false)
-            setTimeout(() => setIsvisible(false), 300);
-            return false;
-        });
-    }
+    // const open = () => {
+    //     setIsvisible(true)
+    //     setTimeout(() => setIsOpen(true), 50);
+    //     // setScreenItems(2);
+    // }
+    // const close = () => {
+    //     setIsOpen(prev => {
+    //         if (!prev) return prev;
+    //         // setScreenItems(3);
+    //         setIsOpen(false)
+    //         setTimeout(() => setIsvisible(false), 300);
+    //         return false;
+    //     });
+    // }
     const event = useCallback((val: string) => {
+        console.log(val)
         setTimeout(() => {
-            val == "open" ? open() : close();
+            // val == "open" ? open() : close();
         }, 50)
     }, []);
 
-    const adjust = (items: number) => {
-        setItemsPerRow(() => {
-
-
-            return items;
-        });
-    }
+    // const adjust = (items: number) => {
+    //     setItemsPerRow(() => {
+    //
+    //
+    //         return items;
+    //     });
+    // }
     const gap = 5; // Gap between items
     const padding = 10;
 
@@ -191,7 +191,7 @@ const MainContent: React.FC = ({}) => {
             let calculatedRows = Math.floor((availableHeight - totalGapHeight) / itemHeight);
 
             // Adjust item height if needed
-            let threshold = (calculatedRows * (itemHeight + gap)) / availableHeight
+            const threshold = (calculatedRows * (itemHeight + gap)) / availableHeight
             if (threshold > .5) {
                 calculatedRows += 1
             }
@@ -215,16 +215,19 @@ const MainContent: React.FC = ({}) => {
         const observer = new ResizeObserver(() => {
             handleResize();
         });
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         containerRef.current &&
         observer.observe(containerRef.current);
         setTimeout(() => setReady(true));
 
         return () => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             containerRef.current &&
+            // eslint-disable-next-line react-hooks/exhaustive-deps
             observer.unobserve(containerRef.current);
 
         };
-    }, [screenItems, itemsPerRow, rows]);
+    }, [screenItems, itemsPerRow, rows, handleResize]);
 
 
     const screenRef = useRef<HTMLDivElement | null>(null);
@@ -258,7 +261,7 @@ const MainContent: React.FC = ({}) => {
             screenRef.style.width = "100%";
             screenRef.style.top = "1rem";
 
-            screenRef.offsetHeight;
+            // screenRef.offsetHeight;
             const sidebarHeight = isOpen ? parentHeight - screenRef.clientHeight : parentHeight;
 
             containerRef.style.height = `calc(${sidebarHeight}px - 1rem)`;
@@ -273,14 +276,15 @@ const MainContent: React.FC = ({}) => {
 
         }
     }
-    const attempt = () => {
-        if (!containerRef.current || !screenRef.current) return;
-        const parent = parentRef.current;
-
-        if (!parent) return;
-        doResize(parent, containerRef.current, screenRef.current)
-        return true
-    }
+    console.log(doResize)
+    // const attempt = () => {
+    //     if (!containerRef.current || !screenRef.current) return;
+    //     const parent = parentRef.current;
+    //
+    //     if (!parent) return;
+    //     doResize(parent, containerRef.current, screenRef.current)
+    //     return true
+    // }
     useEffect(() => {
         // const handleResize = () => attempt();
         // window.addEventListener("resize", handleResize);
@@ -310,10 +314,8 @@ const MainContent: React.FC = ({}) => {
         // }
     }, []);
 
-    const itemsToShow = screenItems.slice(0, itemsPerRow * rows);
+    // const itemsToShow = screenItems.slice(0, itemsPerRow * rows);
 
-    // @ts-ignore
-    // @ts-ignore
     return (
         <>
 

@@ -1,6 +1,5 @@
 "use client"
-import React, {createContext, useContext, useEffect, useRef} from "react";
-import {useSocket} from "@/root/context/providers/SocketProvider";
+import React, {createContext, useContext, useRef} from "react";
 import MediaPicker from "@/root/lib/MediaPicker";
 import {ApplicationProp} from "@/root/GTypes";
 
@@ -25,18 +24,6 @@ const AppInitProvider = ({children}: { children: React.ReactNode }) => {
         >
             {children}
         </AppProviderContext.Provider>)
-}
-const Provider: React.FC = () => {
-    const socket = useSocket();
-    useEffect(() => {
-        if (!socket) return
-
-    }, [socket]);
-
-    return (
-        <>
-        </>
-    )
 }
 export default AppInitProvider
 

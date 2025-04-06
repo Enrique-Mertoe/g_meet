@@ -1,6 +1,5 @@
 import ComponentWrapper, {MainContent} from "@/root/ui/components/Layout/ComponentWrapper";
 import {Suspense} from "react";
-import AppInitProvider from "@/root/context/providers/AppInitProvider";
 import AppContext from "@/root/context/AppContext";
 
 export default function Home() {

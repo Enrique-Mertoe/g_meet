@@ -1,11 +1,13 @@
+import {Closure} from "@/root/GTypes";
+
 class SignalBox {
-    private static eventHandlers: Record<string, Function[]> = {};
-    private static plugins: Record<string, Function> = {};
+    private static eventHandlers: Record<string, Closure[]> = {};
+    private static plugins: Record<string, Closure> = {};
 
     /**
      * Attach an event listener.
      */
-    static on(action: string, handler: Function): void {
+    static on(action: string, handler: Closure): void {
 
         if (!this.eventHandlers[action]) {
             this.eventHandlers[action] = [];
@@ -16,8 +18,8 @@ class SignalBox {
     /**
      * Attach a one-time event listener.
      */
-    static once(action: string, handler: Function): void {
-        const wrapper = (...args: any[]) => {
+    static once(action: string, handler: Closure): void {
+        const wrapper = (...args: Closure[]) => {
             handler(...args);
             this.off(action, wrapper);
         };
@@ -27,7 +29,7 @@ class SignalBox {
     /**
      * Remove a specific event handler or all handlers for an event.
      */
-    static off(action: string, handler?: Function): void {
+    static off(action: string, handler?: Closure): void {
         if (!this.eventHandlers[action]) return;
 
         if (!handler) {
@@ -40,7 +42,7 @@ class SignalBox {
     /**
      * Trigger an event with optional arguments.
      */
-    static trigger(action: string, ...args: any[]): void {
+    static trigger(action: string, ...args: unknown[]): void {
         this.eventHandlers[action]?.forEach(handler => handler(...args));
     }
 
@@ -68,7 +70,7 @@ class SignalBox {
     /**
      * Register a plugin for extending Listener.
      */
-    static registerPlugin(name: string, plugin: (box: typeof SignalBox, ...args: any[]) => any): void {
+    static registerPlugin(name: string, plugin: (box: typeof SignalBox, ...args: unknown[]) => unknown): void {
         if (this.plugins[name]) {
             throw new Error(`Plugin "${name}" is already registered.`);
         }
@@ -78,7 +80,7 @@ class SignalBox {
     /**
      * Use a registered plugin.
      */
-    static use(name: string, ...args: any[]): any {
+    static use(name: string, ...args: unknown[]): unknown {
         if (!this.plugins[name]) {
             throw new Error(`Plugin "${name}" is not registered.`);
         }

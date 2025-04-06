@@ -1,5 +1,6 @@
 import React, {createContext, useContext, useEffect, useRef} from "react";
 import {useSocket} from "@/root/context/providers/SocketProvider";
+import {PresentationDelegate} from "@/root/GTypes";
 
 type PresentContextType = {
     handler: PresentationDelegate | null

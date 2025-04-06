@@ -1,7 +1,7 @@
 "use client"
-import React, {useEffect} from "react";
+import React from "react";
 import AppInitProvider from "@/root/context/providers/AppInitProvider";
-import {SocketProvider, useSocket} from "@/root/context/providers/SocketProvider";
+import {SocketProvider} from "@/root/context/providers/SocketProvider";
 import {DetailScreenProvider} from "@/root/context/providers/DetailScreenProvider";
 import {PresentProvider} from "@/root/context/providers/PresentProvider";
 import {DialogProvider} from "@/root/ui/components/Dialogs/DialogProvider";

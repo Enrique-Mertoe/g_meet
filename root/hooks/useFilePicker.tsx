@@ -1,22 +1,56 @@
 "use client"
-import React, {useEffect, useRef, useState} from "react";
-import {DialogBuilder, MediaPickerType} from "@/root/GTypes";
+import React, {createContext, useContext, useEffect, useRef, useState} from "react";
+import {DialogBuilder, FileInfo, MediaPickerType} from "@/root/GTypes";
 import GIcon from "@/root/ui/components/Icons";
 import {Button} from "@/root/ui/components/material-design/button";
 import {useDialog} from "@/root/ui/components/Dialogs/DialogProvider";
 
+type PickerType = {
+    onPick: (files: FileList) => void
+    onDispatch: (files: FileInfo) => void
+}
+const PickerContext = createContext<PickerType>({} as PickerType)
+const PickerProvider = ({children}: { children: React.ReactNode }) => {
+    const [handler, setHandler] = useState<PickerType>({} as PickerType)
+    const [, setFiles] = useState<FileList | null>(null)
+
+    // const h:PickerType = useCallback(()=>{
+    //
+    // },[{}])
+    useEffect(() => {
+        setHandler({
+            onPick(files) {
+                setFiles(files)
+            },
+            onDispatch(files) {
+                console.log(files)
+            }
+        })
+    }, []);
+    return (
+        <PickerContext.Provider value={handler}>
+            {children}
+        </PickerContext.Provider>
+    )
+}
+
+const usePicker = () => {
+    const context = useContext(PickerContext);
+    if (!context) {
+        throw new Error('usePicker must be used within a PickerContext');
+    }
+    return context
+}
 const FileItem = ({file}: { file: File }) => {
+
     const [src, setSrc] = useState<string | null>(null);
-    const [fName, setFName] = useState<string | null>(file.name);
+    const [fName,] = useState<string | null>(file.name);
     const [fSize, setFSize] = useState<string>("...");
     const [loaded, setLoaded] = useState(false);
     const [scale, setScale] = useState(false);
     useEffect(() => {
-        let reader = new FileReader();
-        reader.onloadend = function (e) {
-            // field.find(".smv-upload--file").aClass("loaded")
-            //     .data("file-content", file)
-            //     .find("img").attr("src", e.target.result);
+        const reader = new FileReader();
+        reader.onloadend = function () {
             setLoaded(true)
             setTimeout(() => setScale(true), 10)
             setSrc(reader.result as string)
@@ -24,7 +58,7 @@ const FileItem = ({file}: { file: File }) => {
         reader.readAsDataURL(file);
 
         setFSize(() => {
-            let sizeInBytes = file.size
+            const sizeInBytes = file.size
             if (sizeInBytes < 1024) {
                 return `${sizeInBytes} B`;
             } else if (sizeInBytes < 1024 * 1024) {
@@ -35,7 +69,7 @@ const FileItem = ({file}: { file: File }) => {
                 return `${(sizeInBytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
             }
         })
-    }, []);
+    }, [file]);
     return (
         <fieldset className="smv-uploader--data col">
             <div className={`smv-upload--file  ${loaded && "loaded"}`}>
@@ -78,6 +112,7 @@ const FileItem = ({file}: { file: File }) => {
     )
 }
 const FileUploader = () => {
+    const p = usePicker()
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [count, setCount] = useState(0)
     const [files, setFiles] = useState<FileList | null>(null)
@@ -89,6 +124,10 @@ const FileUploader = () => {
         setCount(prev => prev + files.length)
         setFiles(files)
     }
+    useEffect(() => {
+        if (files)
+            p.onPick(files)
+    }, [files, p]);
     return (
         <>
             <div className="smv-uploader--wrapper">
@@ -136,7 +175,7 @@ export const PickerView: React.FC<{
     listener: PVListener
 }> = ({listener}) => {
     const [files, setFiles] = useState([]);
-    let d = useDialog()
+    console.log(files, setFiles)
     return (
         <div className={"tab-content"}>
             <div className="container  h-[500px]">
@@ -196,7 +235,7 @@ const MediaPicker = () => {
         pick() {
             dialog.current = modal.create(
                 {
-                    content: <PickerView listener={listener}/>
+                    content: <PickerProvider><PickerView listener={listener}/></PickerProvider>
                 }
             )
         }

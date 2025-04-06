@@ -10,7 +10,7 @@ const SocketContext = createContext<SocketContextType>({socket: null});
 
 export const SocketProvider = ({children}: { children: React.ReactNode }) => {
     const socketRef = useRef<Socket | null>(null);
-    const [sReady, setSReady] = useState(false)
+    const [, setSReady] = useState(false)
 
     useEffect(() => {
         socketRef.current = io(process.env.NEXT_PUBLIC_WS_API_URL ?? 'https://ws.kaigates.com', {
