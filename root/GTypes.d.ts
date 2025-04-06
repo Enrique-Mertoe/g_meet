@@ -38,7 +38,7 @@ declare interface ChatInfo {
     id: string;
     message: string;
     sender: string;
-    file?: any
+    file?: FileInfo
 }
 
 declare interface WSEndpoint {

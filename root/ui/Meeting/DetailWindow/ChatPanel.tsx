@@ -18,7 +18,7 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
     const [message, setInputValue] = useState("")
     const [messages, setMSG] = useState<ChatInfo[]>([]);
     const [file, setFile] = useState<File | null>(null);
-    const [files, setFiles] = useState<File[]>([]);
+    const [, setFiles] = useState<File[]>([]);
     const [, setNewMessage] = useState(0);
     const formRef = useRef<HTMLFormElement | null>(null)
     const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -42,7 +42,7 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
             processFile(file, info => {
                 chat?.send({
                         message: msg, id: generateMeetID(),
-                        sender: acc.user()?.uid ?? "", file
+                        sender: acc.user()?.uid ?? "", file: info
                     }
                 )
             });
@@ -72,12 +72,10 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
 
     const handleFilePicker = () => {
         filePicker.pick(media => {
-
+            setFiles(prevState => [...prevState, media])
         })
         // setFiles(fileItems.map(fileItem => fileItem.file)); // Store the files selected in FilePond
     };
-
-    let ids: string | string[] = []
     return (
         <div className={"vstack h-full"}>
             <div className="flex-1 overflow-y-auto sb-mini flex gap-2 flex-col-reverse p-2 ">
@@ -102,9 +100,7 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
                 <div className="messages">
                     <div className="imessage">
                         {messages.map((msg, index) => {
-                            // if (ids.includes(msg.id)) return;
-                            // ids.push(msg.id)
-                            return <MessageItem id={""} key={msg.id} sender={msg.sender} message={msg.message}/>
+                            return <MessageItem id={msg.id} key={index} sender={msg.sender} message={msg.message}/>
                         })}
                     </div>
                 </div>
@@ -181,6 +177,6 @@ class Builder {
 
 export {ChatPanelView}
 
-export default function () {
+export default function ChatPanel() {
     return Builder.instance();
 }
