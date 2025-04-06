@@ -1,5 +1,5 @@
 import SignalBox from "@/root/manage/SignalBox";
-import {useEffect, useState} from "react";
+import {WSResponse} from "@/root/GTypes";
 
 
 class WebSocketManager {
@@ -46,7 +46,7 @@ class WebSocketManager {
     };
 
     triggerEvent() {
-        let action = this.receivedData?.event
+        const action = this.receivedData?.event
         alert(action)
         SignalBox.trigger(action ?? "ws3", this.receivedData)
     }

@@ -5,7 +5,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     design?: string;
 }
 
-const Button: React.FC<{
+export type BtnType = {
     text?: string;
     icon?: React.ReactNode;
     design?:
@@ -31,7 +31,14 @@ const Button: React.FC<{
         "danger-soft" | "light-soft" | "dark-soft";
     className?: string;
 
-} & React.ButtonHTMLAttributes<HTMLButtonElement>> = ({text, icon, design = "light", className, ...rest}) => {
+}
+const Button: React.FC<BtnType & React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
+                                                                                       text,
+                                                                                       icon,
+                                                                                       design = "light",
+                                                                                       className,
+                                                                                       ...rest
+                                                                                   }) => {
     const buttonStyles = {
         primary: "bg-blue-500 text-white border border-blue-500 hover:bg-blue-600 hover:border-blue-600",
         light: "bg-gray-100 text-black border border-gray-100 hover:bg-gray-300 hover:border-gray-400",

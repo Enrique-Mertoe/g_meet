@@ -16,7 +16,7 @@ const AppInitProvider = ({children}: { children: React.ReactNode }) => {
     const handler = useRef<ApplicationProp | null>(null)
 
     handler.current = {
-        mediaPicker: () => MediaPicker
+        // mediaPicker: () => MediaPicker
     }
     return (
         <AppProviderContext.Provider

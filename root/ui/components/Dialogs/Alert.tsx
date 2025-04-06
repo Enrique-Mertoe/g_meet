@@ -1,10 +1,10 @@
 "use client";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {AlertCircle, Info, CheckCircle, AlertTriangle} from "lucide-react";
 import {DHook, DialogEventListener, DialogView} from "@/root/ui/components/Dialogs/dialogView";
-import {createRoot} from "react-dom/client";
+import {createRoot, Root} from "react-dom/client";
 import GIcon from "@/root/ui/components/Icons";
-import {Button} from "@/root/ui/components/material-design/button";
+import {BtnType, Button} from "@/root/ui/components/material-design/button";
 import {Closure} from "@/root/GTypes";
 
 const icons = {
@@ -38,10 +38,13 @@ export interface ConfirmHandler {
     negativeFeedback(...args: (string | Closure)[]): void
 }
 
+type m = {
+    text: string, icon: string, btn: BtnType["design"]
+}
 const AlertComponent: React.FC<AlertProps> = ({type, message, callback}) => {
     const [open, setOpen] = useState(false);
 
-    const icons: Record<string, unknown> = {
+    const icons: Record<string, m> = {
         error: {
             icon: "alert-triangle",
             text: "text-red-600",
@@ -108,16 +111,18 @@ const AlertComponent: React.FC<AlertProps> = ({type, message, callback}) => {
 
         return [label, callback];
     };
-    const confirmFB: ConfirmHandler = {
-        positiveFeedback(...args) {
-            const [leb, cb] = processHandler("Ok", ...args);
-            setOk(() => ({label: leb, hnd: cb}))
+    const confirmFB: ConfirmHandler = useMemo(() => (
+        {
+            positiveFeedback(...args) {
+                const [leb, cb] = processHandler("Ok", ...args);
+                setOk(() => ({label: leb, hnd: cb}))
+            }
+            , negativeFeedback(...args) {
+                const [leb, cb] = processHandler("Cancel", ...args);
+                setCancel(() => ({label: leb, hnd: cb}))
+            }
         }
-        , negativeFeedback(...args) {
-            const [leb, cb] = processHandler("Cancel", ...args);
-            setCancel(() => ({label: leb, hnd: cb}))
-        }
-    }
+    ), [])
 
     useEffect(() => {
         callback?.({
@@ -128,7 +133,7 @@ const AlertComponent: React.FC<AlertProps> = ({type, message, callback}) => {
                 fb?.(type == "confirm" ? confirmFB : {})
             }
         })
-    }, [callback]);
+    }, [callback, confirmFB, type]);
 
 
     const listener: DHook = {
@@ -140,6 +145,7 @@ const AlertComponent: React.FC<AlertProps> = ({type, message, callback}) => {
     const handleFeedback = (choice: "ok" | "no") => {
         choice == "ok" ? btnOk.hnd() : btnCancel.hnd();
     }
+    // const t = icons[""].text
     return (
         <DialogView hook={listener} design={"p-3"}>
             <div className="hstack mb-2">
@@ -175,19 +181,19 @@ const AlertComponent: React.FC<AlertProps> = ({type, message, callback}) => {
 
 class AlertDialog {
     private container: HTMLDivElement | null = null;
-    private root: any = null;
+    private root: Root | null = null;
 
     constructor(type: AlertOptions["type"], message: string, callback?: () => void) {
         this.show(type, message, callback)
     }
 
-    private show(type: AlertOptions["type"], message: string, callback?: (...args: any) => void) {
+    private show(type: AlertOptions["type"], message: string, callback?: (...args: unknown[]) => void) {
         if (!this.container) {
             this.container = document.createElement("div");
             document.body.appendChild(this.container);
             this.root = createRoot(this.container);
         }
-        this.root.render(<AlertComponent type={type} message={message} callback={event => {
+        this.root?.render(<AlertComponent type={type} message={message} callback={event => {
             event.onDismissed(() => {
                 if (this.container) {
                     this.container.remove();
@@ -198,22 +204,22 @@ class AlertDialog {
         }}/>);
     }
 
-    static create(type: AlertOptions["type"], message: string, callback?: (...args: any) => void): AlertDialog {
+    static create(type: AlertOptions["type"], message: string, callback?: Closure): AlertDialog {
         return new this(type, message, callback);
     }
 }
 
 const Alert = (() => {
-    const create = (type: AlertOptions["type"], message: string, callback?: (...args: any) => void) => {
+    const create = (type: AlertOptions["type"], message: string, callback?: Closure) => {
         return AlertDialog.create(type, message, callback)
     };
 
     return {
-        error: (message: any, callback?: any) => create("error", message, callback),
-        warn: (message: any, callback?: any) => create("warn", message, callback),
-        info: (message: any, callback?: any) => create("info", message, callback),
-        success: (message: any, callback?: any) => create("success", message, callback),
-        confirm: (message: any, feedbackHandler?: (handler: ConfirmHandler) => void) => create("confirm", message, feedbackHandler)
+        error: (message: string, callback?: Closure) => create("error", message, callback),
+        warn: (message: string, callback?: Closure) => create("warn", message, callback),
+        info: (message: string, callback?: Closure) => create("info", message, callback),
+        success: (message: string, callback?: Closure) => create("success", message, callback),
+        confirm: (message: string, feedbackHandler?: (handler: ConfirmHandler) => void) => create("confirm", message, feedbackHandler)
     };
 })();
 

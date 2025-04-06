@@ -4,7 +4,7 @@ import React, {useEffect, useState} from "react";
 
 export interface DialogEventListener {
     onDismissed: (callback: () => void) => void
-    feedbackHandler: (handler?: (...ags: never) => void) => void
+    feedbackHandler: (handler?: (...ags: unknown[]) => void) => void
 }
 
 export interface ModalEventListener {
