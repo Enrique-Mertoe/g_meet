@@ -53,10 +53,10 @@ const LockPerson: LucideIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGEl
 LockPerson.displayName = "LockPerson";
 
 
-const GLoader: LucideIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>((
+const GLoader: LucideIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(function GLoader(
     props, ref
-) =>
-    (
+) {
+    return (
         <svg ref={ref} width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
             <rect className="spinner_jCIR fill-blue-400" x="1" y="6" width="2.8" height="12"/>
             <rect className="spinner_jCIR spinner_upm8" x="5.8" y="6" width="2.8" height="12"/>
@@ -64,7 +64,8 @@ const GLoader: LucideIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGEleme
             <rect className="spinner_jCIR spinner_Rp9l" x="15.4" y="6" width="2.8" height="12"/>
             <rect className="spinner_jCIR fill-blue-400 spinner_dy3W" x="20.2" y="6" width="2.8" height="12"/>
         </svg>
-    ));
+    )
+});
 
 const ICONS: Record<string, LucideIcon> = {
     Mic,
@@ -76,15 +77,15 @@ const ICONS: Record<string, LucideIcon> = {
     MessageCircle,
     Smile,
     MoreVertical,
-    PhoneOff,Check,
+    PhoneOff, Check,
     AlertCircle, Info, CheckCircle, AlertTriangle,
-    Phone,Paperclip,
+    Phone, Paperclip,
     ChevronUp, HelpCircle,
-    Hand,CloudUpload,
+    Hand, CloudUpload,
     LockPerson, GLoader,
     Square, Pause, Play, SendHorizontal,
-    MessageSquareText,Monitor,FileText,
-    Shapes, X, Copy, Forward, ArrowRight, UserRoundPlus, Search,LayoutDashboard
+    MessageSquareText, Monitor, FileText,
+    Shapes, X, Copy, Forward, ArrowRight, UserRoundPlus, Search, LayoutDashboard
 };
 
 interface IconProps {

@@ -68,7 +68,7 @@ const Button: React.FC<{
         "outline-dark": "bg-transparent text-gray-800 border border-gray-800 hover:bg-gray-800 hover:text-white hover:border-gray-800",
         link: "bg-transparent text-blue-500 border border-transparent hover:bg-transparent hover:text-blue-700",
     };
-    let Icon = () => {
+    const Icon = () => {
         return <>{icon}</>
     }
 

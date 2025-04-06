@@ -85,7 +85,7 @@ declare interface MediaPickerType {
 }
 
 declare interface ApplicationProp {
-
+    nm?: unknown
 }
 
 declare interface DialogBuilder {

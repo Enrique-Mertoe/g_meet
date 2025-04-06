@@ -1,5 +1,5 @@
 import {motion, AnimatePresence} from "framer-motion";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 
 
 const Tooltip: React.FC<{
@@ -14,15 +14,7 @@ const Tooltip: React.FC<{
     const [isShown, setShown] = useState(false);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
     const tooltipRef = useRef<HTMLDivElement | null>(null)
-
-    useEffect(() => {
-        adjust()
-        return () => {
-            if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        }
-    }, [hover]);
-
-    const adjust = () => {
+    const adjust = useCallback(() => {
         timeoutRef.current && clearTimeout(timeoutRef.current)
         if (hover) {
             setVisible(true)
@@ -31,7 +23,14 @@ const Tooltip: React.FC<{
             setShown(false)
             timeoutRef.current = setTimeout(() => setVisible(false), 300)
         }
-    }
+    }, [hover])
+    useEffect(() => {
+        adjust()
+        return () => {
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        }
+    }, [adjust, hover]);
+
 
     return (
         <>

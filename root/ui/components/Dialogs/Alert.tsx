@@ -5,6 +5,7 @@ import {DHook, DialogEventListener, DialogView} from "@/root/ui/components/Dialo
 import {createRoot} from "react-dom/client";
 import GIcon from "@/root/ui/components/Icons";
 import {Button} from "@/root/ui/components/material-design/button";
+import {Closure} from "@/root/GTypes";
 
 const icons = {
     error: <AlertCircle className="text-red-500 w-6 h-6"/>,
@@ -28,19 +29,19 @@ interface AlertOptions {
 
 interface CHandlerProps {
     label: string;
-    action: Function
+    action: Closure
 }
 
 export interface ConfirmHandler {
-    positiveFeedback(...args: (string | Function)[]): void
+    positiveFeedback(...args: (string | Closure)[]): void
 
-    negativeFeedback(...args: (string | Function)[]): void
+    negativeFeedback(...args: (string | Closure)[]): void
 }
 
 const AlertComponent: React.FC<AlertProps> = ({type, message, callback}) => {
     const [open, setOpen] = useState(false);
 
-    const icons: Record<string, any> = {
+    const icons: Record<string, unknown> = {
         error: {
             icon: "alert-triangle",
             text: "text-red-600",
@@ -97,7 +98,7 @@ const AlertComponent: React.FC<AlertProps> = ({type, message, callback}) => {
         }, 300);
     }, [dAction, dismiss]);
 
-    const processHandler = (defLabel: string, ...args: (string | Function)[]): [string, () => void] => {
+    const processHandler = (defLabel: string, ...args: (string | Closure)[]): [string, () => void] => {
         const defaultCallback: () => void = () => {
         };
 
@@ -109,11 +110,11 @@ const AlertComponent: React.FC<AlertProps> = ({type, message, callback}) => {
     };
     const confirmFB: ConfirmHandler = {
         positiveFeedback(...args) {
-            let [leb, cb] = processHandler("Ok", ...args);
+            const [leb, cb] = processHandler("Ok", ...args);
             setOk(() => ({label: leb, hnd: cb}))
         }
         , negativeFeedback(...args) {
-            let [leb, cb] = processHandler("Cancel", ...args);
+            const [leb, cb] = processHandler("Cancel", ...args);
             setCancel(() => ({label: leb, hnd: cb}))
         }
     }

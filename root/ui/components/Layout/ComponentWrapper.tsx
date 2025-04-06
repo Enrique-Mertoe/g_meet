@@ -114,9 +114,9 @@ const MainContent: React.FC = ({}) => {
         };
 
     useUserManager()
-    const [isOpen, ] = useState(true);
+    const [isOpen,] = useState(true);
     // const [, setIsvisible] = useState(isOpen);
-    const [screenItems, ] = useState(userDetails);
+    const [screenItems,] = useState(userDetails);
     // const [act, setAct] = useState(false);
     const [itemsPerRow, setItemsPerRow] = useState(3);
     const [rows, setRows] = useState(3);
@@ -159,7 +159,7 @@ const MainContent: React.FC = ({}) => {
     const gap = 5; // Gap between items
     const padding = 10;
 
-    const handleResize = () => {
+    const handleResize = useCallback(() => {
         if (containerRef.current) {
             const width = containerRef.current.offsetWidth;
             const height = containerRef.current.offsetHeight;
@@ -208,20 +208,18 @@ const MainContent: React.FC = ({}) => {
             const itemsToShow = screenItems.slice(0, newItemsPerRow * calculatedRows);
             setShowMore(screenItems.length > itemsToShow.length);
         }
-    };
+    }, [screenItems]);
 
     useEffect(() => {
         handleResize()
         const observer = new ResizeObserver(() => {
             handleResize();
         });
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         containerRef.current &&
         observer.observe(containerRef.current);
         setTimeout(() => setReady(true));
 
         return () => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             containerRef.current &&
             // eslint-disable-next-line react-hooks/exhaustive-deps
             observer.unobserve(containerRef.current);

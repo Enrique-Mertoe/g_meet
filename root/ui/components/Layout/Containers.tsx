@@ -1,18 +1,20 @@
 "use client"
-import React, {ReactNode, useCallback, useEffect, useRef} from "react";
+import React, {ReactNode, useCallback, useEffect, useMemo, useRef} from "react";
 import SignalBox from "@/root/manage/SignalBox";
 import GIcon from "@/root/ui/components/Icons";
 import {sSm} from "@/root/manage/ScreenShare/Screenshare";
 import Alert from "@/root/ui/components/Dialogs/Alert";
 import {PSEvent} from "@/root/ui/Meeting/PresentationDisplay";
+import {Closure} from "@/root/GTypes";
 
 
 interface VScreenProps {
     children?: ReactNode;
 }
-const UList: React.FC<VScreenProps> = React.memo(({
-                                                      children
-                                                  }: VScreenProps) => {
+
+const UList: React.FC<VScreenProps> = React.memo(function UList({
+                                                                    children
+                                                                }: VScreenProps) {
     return (
         <>
             <div className="grow w-full h-full">
@@ -26,30 +28,28 @@ const UList: React.FC<VScreenProps> = React.memo(({
 });
 
 
-
-
-
-
 const EndScreen: React.FC<{
     listener: (event: PSEvent) => void
 
-}> = React.memo(({listener}) => {
+}> = React.memo(function EndScreen({listener}) {
 
     const videoRef = useRef<HTMLVideoElement>(null);
-    let eventHandlers: Record<string, Function[]> = {};
-    let ev = {
-        on: (action: string, handler: Function) => {
-            if (!eventHandlers[action]) {
-                eventHandlers[action] = [];
+    const eventHandlers: Record<string, Closure[]> = useMemo(() => ({}), []);
+    const ev = useMemo(() => {
+        return {
+            on: (action: string, handler: Closure) => {
+                if (!eventHandlers[action]) {
+                    eventHandlers[action] = [];
+                }
+                eventHandlers[action].push(handler);
+            },
+            trigger(action: string, ...args: unknown[]): void {
+                eventHandlers[action]?.forEach(handler => handler(...args));
             }
-            eventHandlers[action].push(handler);
-        },
-        trigger(action: string, ...args: any[]): void {
-            eventHandlers[action]?.forEach(handler => handler(...args));
         }
-    }
+    }, [eventHandlers])
 
-    const handleScreenShare = (stream: MediaStream | null) => {
+    const handleScreenShare = useCallback((stream: MediaStream | null) => {
         ev.trigger("action", stream ? "open" : "close");
 
         if (videoRef.current) {
@@ -60,14 +60,14 @@ const EndScreen: React.FC<{
                 videoRef.current.srcObject = null;
             }
         }
-    };
+    }, [ev]);
     useEffect(() => {
         listener(ev);
         SignalBox.on("screenShare", handleScreenShare);
         return () => {
             SignalBox.off("screenShare", handleScreenShare);
         };
-    }, []);
+    }, [ev, handleScreenShare, listener]);
 
 
     return (
@@ -111,7 +111,6 @@ const EndScreen: React.FC<{
     )
 
 });
-
 
 
 export {UList}

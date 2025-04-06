@@ -1,11 +1,10 @@
 "use client"
 import React, {useEffect, useState} from "react";
-import {useDialog} from "@/root/ui/components/Dialogs/DialogContext";
 
 
 export interface DialogEventListener {
     onDismissed: (callback: () => void) => void
-    feedbackHandler: (handler?: (...ags: any) => void) => void
+    feedbackHandler: (handler?: (...ags: never) => void) => void
 }
 
 export interface ModalEventListener {
@@ -22,6 +21,7 @@ const DialogView: React.FC<{
     hook?: DHook;
     design?: string;
     children?: React.ReactNode
+// eslint-disable-next-line react/display-name
 }> = React.memo(({
                      hook,
                      design,
