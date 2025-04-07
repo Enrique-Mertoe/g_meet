@@ -6,6 +6,35 @@ type Props = {
     items: FileInfo[];
 };
 
+const parseTextWithLinks = (text: string) => {
+    const lines = text.split('\n');
+
+    return lines.map((line, index) => {
+        // Detect URLs and replace with anchor elements
+        const parts = line.split(/(https?:\/\/[^\s]+)/g);
+
+        return (
+            <p key={index} className="whitespace-pre-wrap mb-1">
+                {parts.map((part, i) =>
+                    part.match(/https?:\/\/[^\s]+/) ? (
+                        <a
+                            key={i}
+                            href={part}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 underline hover:text-blue-700"
+                        >
+                            {part}
+                        </a>
+                    ) : (
+                        <span key={i}>{part}</span>
+                    )
+                )}
+            </p>
+        );
+    });
+};
+
 const DynamicGrid: React.FC<Props> = ({items}) => {
     const isOdd = items.length % 2 === 1;
     const lastIndex = items.length - 1;
@@ -65,7 +94,7 @@ const MessageItem: React.FC<{ info: ChatInfo }> = ({info}) => {
         //     transform: "scale(.7)",
         //     transition: "all .5s"
         // })
-        setTimeout(() =>target.classList.remove("scale-[.7]"),10)
+        setTimeout(() => target.classList.remove("scale-[.7]"), 10)
     }
 
     useEffect(() => {
@@ -75,7 +104,8 @@ const MessageItem: React.FC<{ info: ChatInfo }> = ({info}) => {
     }, []);
 
     return (
-        <div ref={el} className={`${_from} duration-[.5s] transition-all  scale-[.7] text-sm msg ${!show && "pacity-0"}`}>
+        <div ref={el}
+             className={`${_from} duration-[.5s] transition-all  scale-[.7] text-sm msg ${!show && "pacity-0"}`}>
             {
                 info.files &&
                 <div className={"rounded-inherit"}>
@@ -83,7 +113,7 @@ const MessageItem: React.FC<{ info: ChatInfo }> = ({info}) => {
                 </div>
             }
             <p className={"px-2"}>
-                {info.message}
+                {parseTextWithLinks(info.message)}
                 <small className={"float-right text-[#71bf6d] mt-[3px] ms-1"}>
                     {formatTime(info.time)}
                 </small>
