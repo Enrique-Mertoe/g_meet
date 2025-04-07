@@ -52,8 +52,8 @@ const DetailScreen: React.FC = () => {
     return (
         <>
             <div
-                className={`relative flex-none pb-[5rem] py-3 transition-all duration-300 h-full p-0  ${isOpen ? "w-[350px]" : "w-0"} ${!visible && "hidden"}`}>
-                <div className="rounded-md bg-white w-[350px] h-full">
+                className={`relative flex-none pb-[5rem] py-[2px] transition-all duration-300 h-full p-0  ${isOpen ? "w-[350px]" : "w-0"} ${!visible && "hidden"}`}>
+                <div className="rounded-md bg-white overflow-hidden w-[350px] h-full">
                     {
                         <div className={`size-full  flex flex-col ${!toggle && "hidden"}`}>
                             <div className="hstack border-b-1 p-3">

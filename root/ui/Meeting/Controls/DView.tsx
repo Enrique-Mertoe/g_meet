@@ -14,13 +14,13 @@ const DView = () => {
         <>
             <div className="w-auto gap-4 bg-dark pe-3 ms-auto rounded-full p-2 flex justify-center items-center">
                 <ControlItem tooltip={"Meeting details"} colors={"bg-transparent hover:bg-[#333537]"} isActive={true}
-                             icon="info"
+                             icon="badge-info"
                              onClick={() => {
                                  sdM.toggleMode(InfoPanel().create())
                              }}
                 />
                 <ControlItem colors={"bg-transparent hover:bg-[#333537]"} tooltip={"Chat with everyone"} isActive={true}
-                             icon="message-square-text"
+                             icon="message-circle"
                              onClick={() => {
                                  sdM.toggleMode(ChatPanel().create())
                              }}

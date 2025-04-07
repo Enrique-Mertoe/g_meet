@@ -25,14 +25,14 @@ import {
     MessageSquareMore,
     Shapes,
     MessageSquareText,
-    X,History,
+    X, History,
     Copy,
     Forward,
     SendHorizontal,
     ArrowRight,
     UserRoundPlus,
     Search,
-    LayoutDashboard, Monitor, FileText, CloudUpload, Check, Upload
+    LayoutDashboard, Monitor, FileText, CloudUpload, Check, Upload, BadgeInfo
 
 } from "lucide-react";
 import React, {forwardRef} from "react";
@@ -75,7 +75,7 @@ const ICONS: Record<string, LucideIcon> = {
     ScreenShare,
     Users,
     MessageCircle,
-    Smile,
+    Smile,BadgeInfo,
     MoreVertical,
     PhoneOff, Check,
     AlertCircle, Info, CheckCircle, AlertTriangle,
