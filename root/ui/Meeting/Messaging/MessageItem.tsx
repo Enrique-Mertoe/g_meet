@@ -27,7 +27,7 @@ const DynamicGrid: React.FC<Props> = ({items}) => {
         // Bottom-left and bottom-right
         if (isOdd && isSecondLast) return 'rounded-bl-xl';
         if (!isOdd && isLast) return 'rounded-bl-xl';
-        if (!isOdd && isLast - 1 === index) return 'rounded-br-xl';
+        if (!isOdd && lastIndex - 1 === index) return 'rounded-br-xl';
 
         return '';
     };
