@@ -126,9 +126,10 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
                                                 transition: "all .3s", overflow: "hidden"
                                             })
                                             setTimeout(() => {
-                                                Object.assign(mediaRef.current.style, {
-                                                    height: "0"
-                                                })
+                                                if (mediaRef.current)
+                                                    Object.assign(mediaRef.current.style, {
+                                                        height: "0"
+                                                    })
                                             })
                                         }
                                         setTimeout(() => setUploadedFiles([]), 350)
