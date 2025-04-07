@@ -2,16 +2,15 @@
 import React, {useCallback, useEffect, useRef} from "react";
 import {DialogProvider, useDialog} from "@/root/ui/components/Dialogs/DialogProvider";
 
-import {AppProps} from "next/app";
 import {useMyComponent, ViewProvider} from "@/tests/m";
 
 
 const Page: React.FC = ({}) => {
     const dl = useDialog()
-    let d = useCallback(() => {
+    const d = useCallback(() => {
         dl.create({
             content: (() => {
-                const Vi = React.memo(() => {
+                const Vi = React.memo(function Mm(){
                     useEffect(() => {
                         alert(3);
                     }, []);

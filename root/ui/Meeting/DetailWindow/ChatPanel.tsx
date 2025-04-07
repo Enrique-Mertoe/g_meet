@@ -98,7 +98,7 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
                         {uploadedFiles.map((file, i) => (
                             <div key={i}
                                  className="card w-auto !h-[5rem] flex !w-[5rem]  shadow-1 animate-scale-up scale-95 transform transition-transform duration-300 ease-in-out hover:scale-105">
-                                <img src={file.data ?? ""}
+                                <img src={file.data as string ?? ""}
                                      className={"thumbnail w-full aspect-square rounded-inherit"} alt={file.name}/>
                             </div>
                         ))}
