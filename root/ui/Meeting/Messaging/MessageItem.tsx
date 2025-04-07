@@ -14,7 +14,7 @@ const parseTextWithLinks = (text: string) => {
         const parts = line.split(/(https?:\/\/[^\s]+)/g);
 
         return (
-            <p key={index} className="whitespace-pre-wrap mb-1">
+            <span key={index}>
                 {parts.map((part, i) =>
                     part.match(/https?:\/\/[^\s]+/) ? (
                         <a
@@ -30,7 +30,7 @@ const parseTextWithLinks = (text: string) => {
                         <span key={i}>{part}</span>
                     )
                 )}
-            </p>
+            </span>
         );
     });
 };
@@ -112,7 +112,7 @@ const MessageItem: React.FC<{ info: ChatInfo }> = ({info}) => {
                     <DynamicGrid items={info.files}/>
                 </div>
             }
-            <p className={"px-2"}>
+            <p className={"px-2 whitespace-pre-wrap"}>
                 {parseTextWithLinks(info.message)}
                 <small className={"float-right text-[#71bf6d] mt-[3px] ms-1"}>
                     {formatTime(info.time)}
