@@ -38,6 +38,7 @@ declare interface ChatInfo {
     id: string;
     message: string;
     sender: string;
+    time: number;
     files?: FileInfo[]
 }
 

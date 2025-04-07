@@ -23,18 +23,35 @@ const generateUsername = (): string => {
     return `${randomAdjective}${randomNoun}${randomNumber}`;
 };
 
-const fileToBase64 = (file: File): Promise<string> => {
+const fileToBase64 = (file: File): Promise<ArrayBuffer> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
+        reader.onload = () => resolve(reader.result as ArrayBuffer);
         reader.onerror = (err) => reject(err);
-        reader.readAsDataURL(file);
+        reader.readAsArrayBuffer(file);
     });
 };
+const toBlob = (arrayBuffer: ArrayBuffer) => {
+    const blob = new Blob([arrayBuffer]);
+    return URL.createObjectURL(blob);
+}
+const now = () => {
+    return Math.floor(Date.now() / 1000);
+}
+const formatTime = (timestamp: number) => {
+    const date = new Date(timestamp * 1000);
+
+    return date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+    });
+}
 
 export {
     generateMeetID,
     generateUsername,
     fileToBase64,
-    generateKey
+    generateKey,
+    toBlob, now,formatTime
 }

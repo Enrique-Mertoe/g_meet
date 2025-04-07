@@ -6,10 +6,12 @@ import {TextInput} from "@/root/ui/components/material-design/Input";
 import ToggleSwitch from "@/root/ui/components/material-design/ToggleSwitch";
 import MessageItem from "@/root/ui/Meeting/Messaging/MessageItem";
 import {acc} from "@/root/manage/useUserManager";
-import {generateMeetID} from "@/root/utility";
+import {generateMeetID, now, toBlob} from "@/root/utility";
 import {useChat} from "@/root/context/providers/ChatProvider";
 import {useFilePicker} from "@/root/hooks/useFilePicker";
 import {ChatInfo, FileInfo} from "@/root/GTypes";
+import chatBg from "@/public/chat-bg-2.png"
+import Image from "next/image";
 
 const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
     const chat = useChat()
@@ -44,16 +46,17 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
         })
     }, [chat]);
     const submit = () => {
-        if (message || file) {
+        if (message || uploadedFiles) {
             chat?.send({
-                    message: message??"", id: generateMeetID(),
-                    sender: acc.user()?.uid ?? "", files: uploadedFiles
+                    message: message ?? "", id: generateMeetID(),
+                    sender: acc.user()?.uid ?? "", files: uploadedFiles, time: now()
                 }
             )
             console.log(uploadedFiles)
             formRef.current?.reset()
             setInputValue("")
             setFile(null);
+            setUploadedFiles([])
         }
     }
 
@@ -62,11 +65,16 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
             setUploadedFiles(media)
         })
     };
+
+    const hasMedia = uploadedFiles.length > 0;
     return (
-        <div className={"vstack h-full"}>
+        <div className={"vstack chat-container relative h-full"}>
+            <div className="absolute chat-bg">
+                <Image src={chatBg} alt={"Tbg"}/>
+            </div>
             <div className="flex-1 overflow-y-auto sb-mini flex gap-2 flex-col-reverse p-2 ">
                 <div className="vstack order-last">
-                    <div className={"rounded p-2 py-3 text-sm bg-[#f1f3f4] "}>
+                    <div className={"rounded p-2 py-3 text-sm text-gray-200 bg-[#55656d] "}>
                         <div className="hstack">
                             <p>Let evey one send message</p>
 
@@ -75,7 +83,7 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
                             </div>
                         </div>
                     </div>
-                    <div className={"rounded p-2 mt-4 text-center py-3 text-sm bg-[#f1f3f4] "}>
+                    <div className={"rounded p-2 mt-4 text-center text-gray-200 py-3 text-sm bg-[#55656d] "}>
                         <div className="hstack">
                             <p>You can pin a message to make it visible for people who join later. When you leave
                                 the call,
@@ -86,24 +94,40 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
                 <div className="messages">
                     <div className="imessage">
                         {messages.map((msg, index) => {
-                            return <MessageItem key={index} info={msg}/>
+                            return <MessageItem key={msg.id} info={msg}/>
                         })}
                     </div>
                 </div>
 
             </div>
-            <div className="">
-                <div className="w-full p-2">
-                    <div className="hstack">
-                        {uploadedFiles.map((file, i) => (
-                            <div key={i}
-                                 className="card w-auto !h-[5rem] flex !w-[5rem]  shadow-1 animate-scale-up scale-95 transform transition-transform duration-300 ease-in-out hover:scale-105">
-                                <img src={file.data as string ?? ""}
-                                     className={"thumbnail w-full aspect-square rounded-inherit"} alt={file.name}/>
+            <div
+                className={`${hasMedia && "card transition-all duration-300 !bg-[#f2f6fc] bottom-0 !a bsolute shadow-1 m-2"} p-1`}>
+                {
+                    hasMedia &&
+                    (
+                        <div className="w-full p-2">
+                            <div className="hstack">
+                                {uploadedFiles.map((file, i) => (
+                                    <div key={i}
+                                         className="card w-auto !h-[5rem] flex !w-[5rem]  shadow-1 animate-scale-up scale-95 transform transition-transform duration-300 ease-in-out hover:scale-105">
+                                        <img src={toBlob(file.data as ArrayBuffer)}
+                                             className={"thumbnail w-full aspect-square rounded-inherit"}
+                                             alt={file.name}/>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                </div>
+                            <div className="absolute end-0 top-0 m-2">
+                                <Button
+                                    onClick={() => {
+                                        setUploadedFiles([])
+                                    }}
+                                    className={"!rounded-full !p-2 "}
+                                    design={"primary-soft"}
+                                    icon={<GIcon name={"x"}/>}/>
+                            </div>
+                        </div>
+                    )
+                }
                 <form ref={formRef} method={"post"} onSubmit={(e) => {
                     e.preventDefault()
                     submit()
@@ -119,23 +143,23 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
                             }
                         }}
                     />
-                    <div className="rounded-full hstack gap-2 bg-[#f1f3f4] p-1">
+                    <div className={`rounded-full text-white hstack gap-2 bg-[#414345] p-1 ${uploadedFiles.length && "shadow-1"}`}>
                         <div className={"grow"}>
                             <TextInput
                                 onChange={(e) => setInputValue(e.target.value)}
                                 placeholder={"Send message to everyone"}
-                                className={"!border-0 !ring-0 placeholder:text-gray-700 !bg-transparent"}/>
+                                className={"!border-0 !ring-0 text-white placeholder:text-gray-300 !bg-transparent"}/>
                         </div>
                         <Button
                             type={"button"}
-                            icon={<GIcon color={"text-gray-800"} name={"paperclip"}/>}
-                            className={"!rounded-full hover:bg-gray-100 border-0 !p-2"}
+                            icon={<GIcon color={"text-gray-300"} name={"paperclip"}/>}
+                            className={"!rounded-full !bg-[#414345] hover:!bg-gray-500 border-0 !p-2"}
                             onClick={() => handleFilePicker()}
 
                         />
                         <Button
                             icon={<GIcon name={"send-horizontal"} color={"text-blue-500"}/>}
-                            className={"spect-square border-0 !rounded-full !p-2"}
+                            className={"spect-square !bg-[#414345] border-0 hover:!bg-gray-500 !rounded-full !p-2"}
                             type={"submit"}
                         />
                     </div>

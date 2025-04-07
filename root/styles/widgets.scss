@@ -684,8 +684,24 @@ img {
   }
 }
 
+$chat-bg: #0b141a;
+.chat-container {
+  isolation: isolate;
+
+  .chat-bg {
+    z-index: -1;
+    inset: 0;
+    background-color: $chat-bg;
+    img {
+      height: 100%;
+      width: 100%;
+      opacity: 0.2;
+    }
+  }
+}
+
 .imessage {
-  background-color: #fff;
+  background-color: transparent;
   display: flex;
   flex-direction: column;
   font-family: "SanFrancisco";
@@ -698,7 +714,7 @@ img {
     border-radius: 1.15rem;
     line-height: 1.25;
     max-width: 75%;
-    padding: 0.5rem 0.875rem;
+    padding: .3rem;
     position: relative;
     word-wrap: break-word;
 
@@ -712,18 +728,18 @@ img {
 
     &.from-me {
       align-self: flex-end;
-      background-color: #248bf5;
-      color: #fff;
+      background-color: #eeffde;
+      color: #000;
 
       &::before {
         border-bottom-left-radius: 0.8rem 0.7rem;
-        border-right: 1rem solid #248bf5;
+        border-right: 1rem solid #eeffde;
         right: -0.35rem;
         transform: translate(0, -0.1rem);
       }
 
       &::after {
-        background-color: #fff;
+        background-color: $chat-bg;
         border-bottom-left-radius: 0.5rem;
         right: -40px;
         transform: translate(-30px, -2px);
@@ -745,18 +761,18 @@ img {
 
     &.from-them {
       align-items: flex-start;
-      background-color: #e5e5ea;
-      color: #000;
+      background-color: #2d3b43;
+      color: #ffffff;
 
       &::before {
         border-bottom-right-radius: 0.8rem 0.7rem;
-        border-left: 1rem solid #e5e5ea;
+        border-left: 1rem solid #2d3b43;
         left: -0.35rem;
         transform: translate(0, -0.1rem);
       }
 
       &::after {
-        background-color: #fff;
+        background-color: $chat-bg;
         border-bottom-right-radius: 0.5rem;
         left: 20px;
         transform: translate(-30px, -2px);
@@ -795,3 +811,102 @@ img {
     margin-top: 1rem !important;
   }
 }
+
+.media-list {
+  .media-list-item {
+    border-radius: 0; // default
+    overflow: hidden;
+
+    img {
+      border-radius: inherit;
+    }
+  }
+
+  // One item only
+  &.grid-cols-1 {
+    .item-0 {
+      border-radius: 0.75rem;
+    }
+  }
+
+  // Two items
+  &.grid-cols-2:not(.grid-odd) {
+    .item-0 {
+      border-top-left-radius: 0.75rem;
+      border-bottom-left-radius: 0.75rem;
+    }
+
+    .item-1 {
+      border-top-right-radius: 0.75rem;
+      border-bottom-right-radius: 0.75rem;
+    }
+  }
+
+  // More than 2 - even
+  &.grid-cols-2:not(.grid-odd) {
+    .item-0 {
+      border-top-left-radius: 0.75rem;
+    }
+
+    .item-1 {
+      border-top-right-radius: 0.75rem;
+    }
+
+    // bottom row
+    & > .media-list-item:last-child {
+      border-bottom-right-radius: 0.75rem;
+    }
+
+    & > .media-list-item:nth-last-child(2) {
+      border-bottom-left-radius: 0.75rem;
+    }
+  }
+
+  // More than 2 - odd
+  &.grid-cols-2.grid-odd {
+    .item-0 {
+      border-top-left-radius: 0.75rem;
+    }
+
+    .item-1 {
+      border-top-right-radius: 0.75rem;
+    }
+
+    // Last full-width item
+    & > .media-list-item.col-span-2 {
+      border-bottom-left-radius: 0.75rem;
+      border-bottom-right-radius: 0.75rem;
+    }
+  }
+
+  .media-list-item {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+
+    img {
+      object-fit: cover;
+      object-position: center;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // Odd count - make the last item span full and tall
+  &.grid-odd {
+    .media-list-item.col-span-2 {
+      aspect-ratio: auto;
+      height: auto;
+      max-height: 100px
+    }
+  }
+
+  .media-list-item {
+    height: var(--item-h);
+
+    &.col-span-2 {
+      height: calc(var(--item-h) * 2);
+    }
+  }
+}
+
