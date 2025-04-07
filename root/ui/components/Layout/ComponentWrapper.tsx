@@ -6,6 +6,7 @@ import GControl from "@/root/ui/Meeting/Controls/GControl";
 import PresentationDisplay, {PSEvent} from "@/root/ui/Meeting/PresentationDisplay";
 import {useUserManager} from "@/root/manage/useUserManager";
 import DScreenContext from "@/root/context/DScreenContext";
+import {useFilePicker} from "@/root/hooks/useFilePicker";
 // import {useWebSocket, WebSocketProvider} from "@/root/context/WebSocketContext";
 
 const ComponentWrapper: React.FC<{ children: React.ReactNode }> = ({children}) => {
@@ -24,7 +25,10 @@ const ComponentWrapper: React.FC<{ children: React.ReactNode }> = ({children}) =
 export default ComponentWrapper;
 
 const MainContent: React.FC = ({}) => {
-    // const wsm = useWebSocket();
+    // const p = useFilePicker()
+    // useEffect(() => {
+    //     p.pick(file => {})
+    // }, []);
     const userDetails = [
             {
                 uid: "c",

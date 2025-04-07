@@ -18,7 +18,7 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
     const [message, setInputValue] = useState("")
     const [messages, setMSG] = useState<ChatInfo[]>([]);
     const [file, setFile] = useState<File | null>(null);
-    const [, setFiles] = useState<File[]>([]);
+    const [uploadedFiles, setUploadedFiles] = useState<FileInfo[]>([]);
     const [, setNewMessage] = useState(0);
     const formRef = useRef<HTMLFormElement | null>(null)
     const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -30,51 +30,37 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
     useEffect(() => {
         if (!chat) return;
         chat.addListener(msgListener);
+
         setMSG(chat.currentChats())
         return () => {
             setMSG([])
             chat.removeListener(msgListener)
         };
     }, [chat, msgListener]);
+
+    useEffect(() => {
+        chat?.onType(function onType() {
+
+        })
+    }, [chat]);
     const submit = () => {
         if (message || file) {
-            const msg = message;
-            processFile(file, info => {
-                chat?.send({
-                        message: msg, id: generateMeetID(),
-                        sender: acc.user()?.uid ?? "", file: info
-                    }
-                )
-            });
+            chat?.send({
+                    message: message??"", id: generateMeetID(),
+                    sender: acc.user()?.uid ?? "", files: uploadedFiles
+                }
+            )
+            console.log(uploadedFiles)
             formRef.current?.reset()
             setInputValue("")
             setFile(null);
         }
     }
 
-    const processFile = (file: File | null, cb: (fileInfo?: FileInfo) => void) => {
-        if (!file) return cb()
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const fileData = reader.result;
-
-            if (fileData) {
-                cb({
-                    data: fileData,
-                    name: file.name,
-                    type: file.type,
-                });
-            }
-        };
-
-        reader.readAsArrayBuffer(file);
-    }
-
     const handleFilePicker = () => {
         filePicker.pick(media => {
-            setFiles(prevState => [...prevState, media])
+            setUploadedFiles(media)
         })
-        // setFiles(fileItems.map(fileItem => fileItem.file)); // Store the files selected in FilePond
     };
     return (
         <div className={"vstack h-full"}>
@@ -100,51 +86,64 @@ const ChatPanelView: React.FC = React.memo(function ChatPanelView() {
                 <div className="messages">
                     <div className="imessage">
                         {messages.map((msg, index) => {
-                            return <MessageItem id={msg.id} key={index} sender={msg.sender} message={msg.message}/>
+                            return <MessageItem key={index} info={msg}/>
                         })}
                     </div>
                 </div>
 
             </div>
-            <form ref={formRef} method={"post"} onSubmit={(e) => {
-                e.preventDefault()
-                submit()
-            }}>
-                <input
-                    type="file"
-                    ref={fileInputRef} // File input ref to trigger the click
-                    accept=".doc,.pdf,.png,.jpg,.jpeg,.gif" // Acceptable file types
-                    style={{display: "none"}} // Hidden input
-                    onChange={(e) => {
-                        if (e.target.files) {
-                            setFile(e.target.files[0]); // Set selected file
-                        }
-                    }}
-                />
-                <div className="rounded-full hstack gap-2 bg-[#f1f3f4] p-1">
-                    <div className={"grow"}>
-                        <TextInput
-                            onChange={(e) => setInputValue(e.target.value)}
-                            placeholder={"Send message to everyone"}
-                            className={"!border-0 !ring-0 placeholder:text-gray-700 !bg-transparent"}/>
+            <div className="">
+                <div className="w-full p-2">
+                    <div className="hstack">
+                        {uploadedFiles.map((file, i) => (
+                            <div key={i}
+                                 className="card w-auto !h-[5rem] flex !w-[5rem]  shadow-1 animate-scale-up scale-95 transform transition-transform duration-300 ease-in-out hover:scale-105">
+                                <img src={file.data ?? ""}
+                                     className={"thumbnail w-full aspect-square rounded-inherit"} alt={file.name}/>
+                            </div>
+                        ))}
                     </div>
-                    <Button
-                        type={"button"}
-                        icon={<GIcon color={"text-gray-800"} name={"paperclip"}/>}
-                        className={"!rounded-full hover:bg-gray-100 border-0 !p-2"}
-                        onClick={() => handleFilePicker()}
-
-                    />
-                    <Button
-                        icon={<GIcon name={"send-horizontal"} color={"text-blue-500"}/>}
-                        className={"spect-square border-0 !rounded-full !p-2"}
-                        type={"submit"}
-                    />
                 </div>
-                <div className="hstack px-3 py-1">
+                <form ref={formRef} method={"post"} onSubmit={(e) => {
+                    e.preventDefault()
+                    submit()
+                }}>
+                    <input
+                        type="file"
+                        ref={fileInputRef} // File input ref to trigger the click
+                        accept=".doc,.pdf,.png,.jpg,.jpeg,.gif" // Acceptable file types
+                        style={{display: "none"}} // Hidden input
+                        onChange={(e) => {
+                            if (e.target.files) {
+                                setFile(e.target.files[0]); // Set selected file
+                            }
+                        }}
+                    />
+                    <div className="rounded-full hstack gap-2 bg-[#f1f3f4] p-1">
+                        <div className={"grow"}>
+                            <TextInput
+                                onChange={(e) => setInputValue(e.target.value)}
+                                placeholder={"Send message to everyone"}
+                                className={"!border-0 !ring-0 placeholder:text-gray-700 !bg-transparent"}/>
+                        </div>
+                        <Button
+                            type={"button"}
+                            icon={<GIcon color={"text-gray-800"} name={"paperclip"}/>}
+                            className={"!rounded-full hover:bg-gray-100 border-0 !p-2"}
+                            onClick={() => handleFilePicker()}
 
-                </div>
-            </form>
+                        />
+                        <Button
+                            icon={<GIcon name={"send-horizontal"} color={"text-blue-500"}/>}
+                            className={"spect-square border-0 !rounded-full !p-2"}
+                            type={"submit"}
+                        />
+                    </div>
+                    <div className="hstack px-3 py-1">
+
+                    </div>
+                </form>
+            </div>
         </div>
     )
 });

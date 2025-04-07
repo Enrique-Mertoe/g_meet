@@ -38,7 +38,14 @@ declare interface ChatInfo {
     id: string;
     message: string;
     sender: string;
-    file?: FileInfo
+    files?: FileInfo[]
+}
+
+declare interface TypingInfo {
+    id: string;
+    userId: string;
+    chatId: string;
+    status: boolean
 }
 
 declare interface WSEndpoint {
@@ -51,6 +58,7 @@ declare interface WSEndpoint {
 declare interface ChatContextProvider {
     send: (data: ChatInfo) => void;
     addListener: (handler: (chat: ChatInfo) => void) => void;
+    onType: (handler: (chat: TypingInfo) => void) => void;
     currentChats: () => ChatInfo[];
     removeListener: (listener: Closure) => void;
 }
@@ -81,7 +89,7 @@ declare interface PSParams {
 }
 
 declare interface MediaPickerType {
-    pick: (handler: (file: File) => void) => void;
+    pick: (fn: (file: FileInfo[]) => void) => void;
 }
 
 declare interface ApplicationProp {

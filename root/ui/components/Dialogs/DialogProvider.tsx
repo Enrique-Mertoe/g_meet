@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useState, useCallback, ReactNode, useEffect} from "react";
+import React, {createContext, useContext, useState, useCallback, ReactNode, useEffect, useRef} from "react";
 import {generateMeetID} from "@/root/utility";
 import {Closure} from "@/root/GTypes";
 import DialogStack from "@/root/ui/Meeting/DetailWindow/DialogStack";
@@ -29,7 +29,6 @@ const DialogContext = createContext<DialogContextType | undefined>(undefined);
 
 
 const Dialog = ({
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     cancelable, content, onOpen, onClose, persist
                 }: DialogOptions): DialogInstance => {
     const closeHandler: Closure[] = [];
@@ -46,7 +45,6 @@ const Dialog = ({
         onOpen(): DialogBuilder | void {
             onOpen?.();
         },
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         setView(view: React.ReactNode): DialogBuilder | void {
             return undefined;
         },
@@ -68,7 +66,6 @@ const Dialog = ({
         }
 
     }
-
     return {
         view: <DialogComponent
             content={content}
@@ -111,9 +108,10 @@ const DialogProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     const [stack] = useState<DialogStack<DialogInstance>>(new DialogStack());
     const [dialogs, setDialogs] = useState<DialogInstance[]>([]);
     const [prevState, sp] = useState(false)
-    const create = (context: DialogOptions) => {
+    const create = useCallback((context: DialogOptions) => {
         const d = Dialog(context)
         setDialogs(prev => [...prev, d])
+        sp(prev => !prev)
         stack.push(d.id, d)
         d.handler.onDismiss(() => {
             stack.pop()
@@ -124,7 +122,7 @@ const DialogProvider: React.FC<{ children: ReactNode }> = ({children}) => {
             sp(true)
         });
         return d.builder
-    }
+    }, [stack])
     useEffect(() => {
         const currentDialog = stack.getCurrentDialog();
         if (currentDialog) {
@@ -134,22 +132,19 @@ const DialogProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     const gS = (index: number, id: string) => {
         return (index === dialogs.length - 1) || (prevState && stack.getCurrentDialog()?.prev?.content.id == id) ? "" : "hidden"
     }
+
     return (
         <DialogContext.Provider value={{create}}>
             {children}
             {dialogs.map((dialog, index) => (
                 <div
 
-                    key={dialog.id}
+                    key={index}
                     className={gS(index, dialog.id)}
                 >
                     {dialog.view}
                 </div>
             ))}
-
-            {/*{stack.getCurrentDialog() && (*/}
-            {/*    stack.getCurrentDialog()?.content.view*/}
-            {/*)}*/}
         </DialogContext.Provider>
     );
 }

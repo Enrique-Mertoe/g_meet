@@ -359,7 +359,12 @@
     font-size: 0;
     box-shadow: 0 0 100px RGBa(0, 0, 0, 0.5);
     border-radius: 3px;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .tab-control {
+      position: relative;
+    }
 
     input {
       display: none;
@@ -384,7 +389,6 @@
     label {
       display: inline-block;
       font-size: 16px;
-      height: 36px;
       line-height: 36px;
       width: 25%;
       text-align: center;
@@ -418,7 +422,7 @@
       height: 2px;
       background: #1E88E5;
       width: 25%;
-      top: 34px;
+      bottom: 0;
       left: 0;
       transition: 0.25s ease;
     }
@@ -426,7 +430,7 @@
     .content-container {
       background: #eee;
       position: relative;
-      height: 100%;
+      flex: 1;
       font-size: 16px;
 
       .content {
@@ -434,22 +438,16 @@
         padding: 10px;
         width: 100%;
         top: 0;
+        left: 0;
+        right: 0;
+        bottom: 1rem;
         height: 100%;
         opacity: 0;
         transition: 0.25s ease;
         color: #333;
 
-        h3 {
-          font-weight: 200;
-          margin: 10px 0;
-        }
-
-        p {
-          margin: 10px 0;
-        }
-
-        p, i {
-          font-size: 13px;
+        &.show {
+          opacity: 1;
         }
       }
     }
@@ -494,6 +492,13 @@
 
   .smv-uploader--data {
     transform-style: preserve-3d;
+    transition: .3s ease-in-out;
+    transform: translate3d(0px, 0px, -250px) rotateX(27deg) scale(0.9, 0.9);
+    position: relative;
+
+    &.show {
+      transform: translate3d(0px, 0px, -250px);
+    }
   }
 
   .smv-uploader-progress {
@@ -504,12 +509,10 @@
     width: 100%;
     border-radius: inherit;
     gap: .3rem;
+    position: relative;
   }
 
-  .smv-uploader-progress svg {
-    fill: currentColor;
-  }
-.filepond--file-poster-overlay {
+  .filepond--file-poster-overlay {
     display: block;
     position: absolute;
     left: 0;
@@ -526,44 +529,57 @@
     -ms-user-select: none;
     user-select: none;
     aspect-ratio: auto;
-}
-  .smv-uploader-media {
-    position: relative;
-    isolation: isolate;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    border-radius: .5rem;
-
-    &::before {
-      position: absolute;
-      z-index: -1;
-      background: transparent;
-      content: "";
-      inset: 0;
-      backdrop-filter: blur(10px) grayscale(.5);
-      border-radius: inherit;
-    }
   }
 
-  .smv-uploader-media img {
+  .smv-uploader-media-cont {
+    //position: absolute;
     width: 100%;
-    height: 100%;
-    max-height: 200px;
-    object-fit: contain;
-    object-position: center;
+    height: 0;
+    transition: .8s ease-out;
+    max-width: 100%;
+    overflow: hidden;
+    background: #171717;
     border-radius: inherit;
+
+    .smv-uploader-media {
+      position: relative;
+      isolation: isolate;
+      background-size: cover;
+      background-position: center;
+      border-radius: .5rem;
+
+      &::before {
+        position: absolute;
+        z-index: -1;
+        background: transparent;
+        content: "";
+        inset: 0;
+        backdrop-filter: blur(10px) grayscale(.5);
+        border-radius: inherit;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        max-height: 200px;
+        transition-duration: .8s;
+        object-fit: contain;
+        object-position: center;
+        border-radius: inherit;
+        transition-delay: .1s;
+        transition-timing-function: cubic-bezier(0.5, 0.25, 0, 1);
+      }
+    }
   }
 
   .smv-uploader-control {
     display: flex;
-    padding: .5rem .8rem;
     color: #fff;
     width: 100%;
     border-radius: inherit;
     gap: .3rem;
     position: absolute;
+    flex-direction: row;
     top: 0;
     left: 0;
     right: 0;
@@ -598,30 +614,12 @@
     border-radius: .5rem;
   }
 
-  .smv-upload--file.loaded .smv-uploader-progress {
-    display: none;
-  }
 
   .smv-upload--file-name {
-    flex-grow: 1;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     display: block;
-  }
-
-  .smv-upload--file-name:hover {
-    left: 0;
-    top: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 1px 2px;
-    white-space: nowrap;
-    overflow: visible;
-    text-overflow: unset;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    max-width: none;
-    z-index: 10;
   }
 
   .smv-upload--file-size {
@@ -630,5 +628,170 @@
 
   .smv-uploader--root.dragover {
     background: rgba(0, 123, 255, 0.1);
+  }
+}
+
+img {
+  .fluid {
+    max-width: 100%;
+  }
+
+
+  .cover-center {
+    object-position: center !important;
+    object-fit: cover !important;
+
+  }
+
+  .fit-center {
+    object-position: center !important;
+    object-fit: contain !important;
+  }
+}
+
+.thumbnail {
+  //vertical-align: middle;
+  max-width: 100%;
+  object-position: center;
+  object-fit: cover;
+  height: auto;
+  max-height: 100%;
+}
+
+.smv-loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #FFF;
+  border-bottom-color: #1E88E5;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+
+  &.sm {
+    width: 24px;
+    height: 24px;
+    border-width: 2px;
+  }
+
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.imessage {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  font-family: "SanFrancisco";
+  font-size: 1.25rem;
+  margin: 0 auto 1rem;
+  max-width: 600px;
+  padding: 0 1.5rem;
+
+  .msg {
+    border-radius: 1.15rem;
+    line-height: 1.25;
+    max-width: 75%;
+    padding: 0.5rem 0.875rem;
+    position: relative;
+    word-wrap: break-word;
+
+    &::before,
+    &::after {
+      bottom: -0.1rem;
+      content: "";
+      height: 1rem;
+      position: absolute;
+    }
+
+    &.from-me {
+      align-self: flex-end;
+      background-color: #248bf5;
+      color: #fff;
+
+      &::before {
+        border-bottom-left-radius: 0.8rem 0.7rem;
+        border-right: 1rem solid #248bf5;
+        right: -0.35rem;
+        transform: translate(0, -0.1rem);
+      }
+
+      &::after {
+        background-color: #fff;
+        border-bottom-left-radius: 0.5rem;
+        right: -40px;
+        transform: translate(-30px, -2px);
+        width: 10px;
+      }
+
+      & ~ .from-me {
+        margin: 0.25rem 0 0;
+
+        &:not(:last-child) {
+          margin: 0.25rem 0 0;
+        }
+
+        &:last-child {
+          margin-bottom: 0.5rem;
+        }
+      }
+    }
+
+    &.from-them {
+      align-items: flex-start;
+      background-color: #e5e5ea;
+      color: #000;
+
+      &::before {
+        border-bottom-right-radius: 0.8rem 0.7rem;
+        border-left: 1rem solid #e5e5ea;
+        left: -0.35rem;
+        transform: translate(0, -0.1rem);
+      }
+
+      &::after {
+        background-color: #fff;
+        border-bottom-right-radius: 0.5rem;
+        left: 20px;
+        transform: translate(-30px, -2px);
+        width: 10px;
+      }
+    }
+
+    &[class^="from-"] {
+      margin: 0.5rem 0;
+      width: fit-content;
+
+      &.emoji {
+        background: none;
+        font-size: 2.5rem;
+
+        &::before {
+          content: none;
+        }
+      }
+    }
+  }
+
+  .no-tail::before {
+    display: none;
+  }
+
+  .margin-b_none {
+    margin-bottom: 0 !important;
+  }
+
+  .margin-b_one {
+    margin-bottom: 1rem !important;
+  }
+
+  .margin-t_one {
+    margin-top: 1rem !important;
   }
 }
