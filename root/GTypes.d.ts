@@ -1,5 +1,6 @@
 import {ConfirmHandler} from "@/root/ui/components/Dialogs/Alert";
 import {decl} from "postcss";
+import * as async_hooks from "node:async_hooks";
 
 declare interface WSRequest {
     event: string;
@@ -106,3 +107,29 @@ declare interface DialogBuilder {
 }
 
 declare type Closure = (...args) => void;
+
+declare type FetchResponse<T> = {
+    ok?: boolean;
+    data?: T;
+    error?: string;
+    message?: string;
+}
+
+declare type ApiResponseData<T> = {
+    ok?: boolean;
+    data?: T;
+    message?: string;
+}
+
+
+type SessionManager = {
+    set: <T>(key: string, value: T) => Promise<void>;
+    get: <T>(key: string, default_value?: T | null) => Promise<T | null | undefined>;
+}
+
+type SessionPayload = {
+    data: string | Dict;
+    expires: Date
+}
+
+type Dict<T = unknown> = Record<string, T>
