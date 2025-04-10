@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
 .card {
   --bs-card-spacer-y: 1.25rem;
   --bs-card-spacer-x: 1.25rem;
@@ -692,6 +694,7 @@ $chat-bg: #0b141a;
     z-index: -1;
     inset: 0;
     background-color: $chat-bg;
+
     img {
       height: 100%;
       width: 100%;
