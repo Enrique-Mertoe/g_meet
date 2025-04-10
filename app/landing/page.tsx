@@ -29,6 +29,13 @@ export default function Page() {
               </span>
 
                                         <div className="my-5 text-white">
+                                            <div className="hstack absolute top-0 m-3 end-0">
+                                                <a href="#" className="btn btn-primary-grad p-3 mb-0">
+                                                    Signin
+                                                    <i className="bi-arrow-right ms-2"></i>
+                                                </a>
+
+                                            </div>
                                             <h1 className="text-4xl md:text-6xl font-bold my-3 text-white">
                                                 Your Virtual Classroom, Reinvented <br/>
                                                 for the Modern Academic World
@@ -46,6 +53,20 @@ export default function Page() {
 
                                         <div
                                             className="mt-6 flex flex-col md:flex-row items-center justify-center gap-4 px-4">
+
+
+                                            <div className="ring-2 ring-blue-600 p-1 rounded-md">
+                                                <div
+                                                    className="border border-blue-600 text-gray-100 px-2  border border-1 border-gray-100   rounded-sm  hover:text-white transition flex items-center"
+                                                >
+                                                    <input type="text"
+                                                           className={"px-6 py-2 outline-0 border-0 shadow-none"}
+                                                           placeholder={"Enter lecture code"}/>
+                                                    <span className="ml-2">
+                    <i className="bi-keyboard text-xl"></i>
+                  </span>
+                                                </div>
+                                            </div>
                                             <a
                                                 href="offcanvasRight"
                                                 className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition"
@@ -53,33 +74,8 @@ export default function Page() {
                                                 data-bs-target="#offcanvasRight"
                                                 aria-controls="offcanvasRight"
                                             >
-                                                Register Now
+                                                Join
                                             </a>
-
-                                            <div className="ring-2 ring-blue-600 p-1 rounded-md">
-                                                <div
-                                                    className="border border-blue-600 text-gray-100 px-2  border border-1 border-gray-100   rounded-md  hover:text-white transition flex items-center"
-                                                >
-                                                    <input type="text"
-                                                           className={"px-6 py-3 outline-0 border-0 shadow-none"}
-                                                           placeholder={"Add to Calendar"}/>
-                                                    <span className="ml-2">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-window-dock"
-                        viewBox="0 0 16 16"
-                    >
-                      <path
-                          d="M3.5 11a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Zm3.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm4.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Z"></path>
-                      <path
-                          d="M14 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h12ZM2 14h12a1 1 0 0 0 1-1V5H1v8a1 1 0 0 0 1 1ZM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2Z"></path>
-                    </svg>
-                  </span>
-                                                </div>
-                                            </div>
                                         </div>
 
 

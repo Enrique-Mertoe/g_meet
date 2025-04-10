@@ -911,3 +911,13 @@ $chat-bg: #0b141a;
   }
 }
 
+.btn-primary-grad {
+  color: #fff;
+  background: -webkit-gradient(linear, left top, right top, from(#7F39F8), color-stop(51%, #543DE7), to(#7F39F8));
+  background: linear-gradient(to right, #7F39F8 0%, #543DE7 51%, #7F39F8 100%);
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  background-size: 200% auto;
+  border: 0;
+  line-height: 1.62;
+}
