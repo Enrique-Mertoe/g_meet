@@ -5,7 +5,7 @@ import session from "@/root/lib/Session";
 import {redirect} from "next/navigation";
 
 export default async function Home() {
-    if (!await session("user1"))
+    if (!await session("user"))
         return redirect("/landing");
     return (
         <AppContext>

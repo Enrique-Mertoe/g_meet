@@ -13,7 +13,7 @@ export const SocketProvider = ({children}: { children: React.ReactNode }) => {
     const [, setSReady] = useState(false)
 
     useEffect(() => {
-        socketRef.current = io(process.env.NEXT_PUBLIC_WS_API_URL ?? 'https://wsv1.kaigates.com', {
+        socketRef.current = io(process.env.NEXT_PUBLIC_WS_API_URL ?? 'https://ws.coolify.kaigates.com', {
             withCredentials: true,
             transports: ['websocket'],
         });

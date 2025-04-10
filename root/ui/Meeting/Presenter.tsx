@@ -1,21 +1,22 @@
 "use client";
 import React, {useEffect, useRef} from "react";
 import {acc} from "@/root/manage/useUserManager";
+import {useScreen} from "@/root/context/providers/ScreenProvider";
 
 const Presenter: React.FC = () => {
-    // const ws = useWebSocket();
+    const screen = useScreen();
     const containerRef = useRef<HTMLDivElement>(null);
     const handleScroll = () => {
         const scrollPercent =
             (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-        // ws.send({
-        //     event: "scroll",
-        //     action: "new",
-        //     identity: acc.user()?.uid ?? "",
-        //     data: {
-        //         scroll_percent: scrollPercent
-        //     }
-        // })
+        screen?.sendInfo({
+            event: "scroll",
+            action: "new",
+            identity: acc.user()?.uid ?? "",
+            data: {
+                scroll_percent: scrollPercent
+            }
+        })
         // ws.send({ event: "scroll",  });
     };
 
@@ -26,22 +27,21 @@ const Presenter: React.FC = () => {
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        if (x >= 0 && x-4 <= rect.width && y >= 0 && y+4 <= rect.height) {
+        if (x >= 0 && x - 4 <= rect.width && y >= 0 && y + 4 <= rect.height) {
             const aspectRatio = rect.width / rect.height;
             const xPercent = (x / rect.width) * 100;
             const yPercent = (y / rect.height) * 100;
 
-            // Send the data only when the cursor is inside the container
-            // ws.send({
-            //     event: "cursor_move",
-            //     action: "new",
-            //     identity: acc.user()?.uid ?? "",
-            //     data: {
-            //         x_percent: xPercent,
-            //         y_percent: yPercent,
-            //         aspect_ratio: aspectRatio,
-            //     },
-            // });
+            screen?.sendInfo({
+                event: "cursor",
+                action: "new",
+                identity: acc.user()?.uid ?? "",
+                data: {
+                    x_percent: xPercent,
+                    y_percent: yPercent,
+                    aspect_ratio: aspectRatio,
+                },
+            });
         }
     };
 

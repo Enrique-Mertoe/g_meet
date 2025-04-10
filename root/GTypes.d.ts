@@ -2,9 +2,15 @@ import {ConfirmHandler} from "@/root/ui/components/Dialogs/Alert";
 import {decl} from "postcss";
 import * as async_hooks from "node:async_hooks";
 
-declare interface WSRequest {
-    event: string;
+declare interface ScreenRequest {
+    event: "cursor" | "scroll";
     action: string;
+    identity: string;
+    data: object;
+}
+
+declare interface ScreenResponse {
+    event: string;
     identity: string;
     data: object;
 }
@@ -50,12 +56,12 @@ declare interface TypingInfo {
     status: boolean
 }
 
-declare interface WSEndpoint {
-    send: (request: WSRequest) => void
-    onMessage: (handler: (response: WSResponse) => void) => void
-    ready: () => boolean
-    close: () => boolean
-}
+// declare interface WSEndpoint {
+//     send: (request: WSRequest) => void
+//     onMessage: (handler: (response: WSResponse) => void) => void
+//     ready: () => boolean
+//     close: () => boolean
+// }
 
 declare interface ChatContextProvider {
     send: (data: ChatInfo) => void;
@@ -63,6 +69,16 @@ declare interface ChatContextProvider {
     onType: (handler: (chat: TypingInfo) => void) => void;
     currentChats: () => ChatInfo[];
     removeListener: (listener: Closure) => void;
+}
+
+
+declare interface ScreenContextProvider {
+    sendInfo: (data: ScreenRequest) => void;
+    addListener: (listener: ScreenRequest["event"],
+                  handler: (response: ScreenResponse) => void) => void;
+    onType: (handler: (chat: TypingInfo) => void) => void;
+    currentChats: () => ChatInfo[];
+    removeListener: (listener: string) => void;
 }
 
 declare interface FileInfo {

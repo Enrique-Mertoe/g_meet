@@ -3,21 +3,22 @@ import React, {useEffect, useRef} from "react";
 // import {useWebSocket} from "@/root/context/WebSocketContext";
 import {useUserManager} from "@/root/manage/useUserManager";
 import SignalBox from "@/root/manage/SignalBox";
-import {PresenterMouse, PresenterScroll, WSResponse} from "@/root/GTypes";
+import {PresenterMouse, PresenterScroll, ScreenResponse, WSResponse} from "@/root/GTypes";
+import {useScreen} from "@/root/context/providers/ScreenProvider";
 
 const Viewer: React.FC = () => {
-    // const ws = useWebSocket();
+    const screen = useScreen()
     const user = useUserManager()
     const cursorRef = useRef<HTMLDivElement>(null);
-     const containerRef = useRef<HTMLDivElement>(null);
-    const hScroll = (info: WSResponse) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const hScroll = (info: ScreenResponse) => {
         const data = info.data as PresenterScroll
         window.scrollTo({
             top: (data.scroll_percent / 100) * (document.body.scrollHeight - window.innerHeight),
             behavior: "smooth",
         });
     }
-    const hCMove = (info: WSResponse) => {
+    const hCMove = (info: ScreenResponse) => {
 
         const data = info.data as PresenterMouse
         if (!cursorRef.current || !containerRef.current) return;
@@ -27,8 +28,10 @@ const Viewer: React.FC = () => {
         console.log(data)
     }
     useEffect(() => {
-        SignalBox.on("scroll", hScroll)
-        SignalBox.on("cursor_move", hCMove)
+        // SignalBox.on("scroll", hScroll)
+        // SignalBox.on("cursor_move", hCMove)
+        screen?.addListener("cursor", hCMove)
+        screen?.addListener("scroll", hScroll)
         // SignalBox.on(event) => {
         //     const data = JSON.parse(event.data);
         //
@@ -41,14 +44,16 @@ const Viewer: React.FC = () => {
         //     }
         // };
         return () => {
-            SignalBox.off("scroll", hScroll)
-            SignalBox.off("cursor_move", hCMove)
+            screen?.removeListener("scroll")
+            screen?.removeListener("cursor")
+            // SignalBox.off("scroll", hScroll)
+            // SignalBox.off("cursor_move", hCMove)
         }
-    }, []);
+    }, [screen]);
 
     return (
         <div ref={containerRef} className="relative w-full overflow-auto bg-white">
-            <div ref={cursorRef} className="absolute w-4 h-4 bg-red-500 rounded-full opacity-75"></div>
+            <div ref={cursorRef} className="absolute h-2 w-2 bg-red-500 rounded-full opacity-75"></div>
             Viewing... as {user.accountType}
         </div>
     );

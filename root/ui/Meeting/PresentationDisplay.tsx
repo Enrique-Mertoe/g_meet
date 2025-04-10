@@ -7,6 +7,7 @@ import Presenter from "@/root/ui/Meeting/Presenter";
 import {useAccount, useUserManager} from "@/root/manage/useUserManager";
 import Viewer from "@/root/ui/Meeting/Viewer";
 import {Closure} from "@/root/GTypes";
+import {ScreenProvider} from "@/root/context/providers/ScreenProvider";
 
 export interface PSEvent {
     on: (action: string, handler: Closure) => void;
@@ -17,7 +18,7 @@ const PScreen: React.FC<{
     presenting?: boolean;
     listener: (event: PSEvent) => void
 
-}> = React.memo(function PScreen({presenting, listener}){
+}> = React.memo(function PScreen({presenting, listener}) {
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const account = useAccount();
@@ -100,12 +101,14 @@ const PScreen: React.FC<{
                 </div>
 
                 {/*<video ref={videoRef} autoPlay playsInline className="w-full rounded-inherit bg-dark h-full"></video>*/}
-                {
-                    account.account() == "host" ?
-                        <Presenter/>
-                        :
-                        <Viewer/>
-                }
+                <ScreenProvider>
+                    {
+                        account.account() == "host" ?
+                            <Presenter/>
+                            :
+                            <Viewer/>
+                    }
+                </ScreenProvider>
             </div>
         </>
     )
