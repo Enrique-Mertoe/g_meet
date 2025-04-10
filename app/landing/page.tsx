@@ -25,12 +25,12 @@ export default function Page() {
                                         data-show="true"
                                     >
               <span className="border border-yellow-500 text-yellow-500 px-3 py-1 rounded-full text-sm inline-block">
-                March 24 - 26, 2024 | San Diego, CA
+               Limitless learning at your fingertips
               </span>
 
                                         <div className="my-5 text-white">
                                             <div className="hstack absolute top-0 m-3 end-0">
-                                                <a href="#" className="btn btn-primary-grad p-3 mb-0">
+                                                <a href="/auth/login" className="btn btn-primary-grad p-3 mb-0">
                                                     Signin
                                                     <i className="bi-arrow-right ms-2"></i>
                                                 </a>
