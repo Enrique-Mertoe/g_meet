@@ -22,16 +22,11 @@ export default function LandingLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
-        <head>
+        <>
             <link rel="stylesheet"
                   href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
-        </head>
-        <body
-            className={`${geistSans.variable} ${geistMono.variable} bg-dark2 antialiased`}
-        >
-        {children}
-        </body>
-        </html>
+
+            {children}
+        </>
     );
 }
