@@ -2,8 +2,8 @@ import Footer from "@/root/ui/landing/Footer";
 
 export default function Page() {
     return (
-        <>
-            <div className="w-full h-screen bg-gray-400">
+        <div className={"vstack"}>
+            <div className="w-full min-h-screen p-2 bg-gray-400">
                 <div
                     data-cue="fadeIn"
                     className="h-full"
@@ -145,9 +145,7 @@ export default function Page() {
                     </section>
                 </div>
             </div>
-
             <Footer/>
-
-        </>
+        </div>
     )
 }
