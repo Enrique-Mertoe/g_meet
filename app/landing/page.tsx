@@ -24,19 +24,19 @@ export default function Page() {
                                         data-cue="zoomIn"
                                         data-show="true"
                                     >
-              <span className="border border-yellow-500 text-yellow-500 px-3 py-1 rounded-full text-sm inline-block">
+              <span className="border border-yellow-500 text-yellow-500 px-3 py-1 mt-[1.5rem] mb:mt-0 rounded-full text-sm inline-block">
                Limitless learning at your fingertips
               </span>
 
                                         <div className="my-5 text-white">
                                             <div className="hstack absolute top-0 m-3 end-0">
-                                                <a href="/auth/login" className="btn btn-primary-grad p-3 mb-0">
+                                                <a href="/auth/login" className="btn btn-primary-grad rounded-1 !p-[.5rem] !px-10 mb-0">
                                                     Signin
                                                     <i className="bi-arrow-right ms-2"></i>
                                                 </a>
 
                                             </div>
-                                            <h1 className="text-4xl md:text-6xl font-bold my-3 text-white">
+                                            <h1 className="text-4xl md:text-6xl font-bold mmy-3 text-white">
                                                 Your Virtual Classroom, Reinvented <br/>
                                                 for the Modern Academic World
                                             </h1>
