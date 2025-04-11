@@ -1002,4 +1002,13 @@ $chat-bg: #0b141a;
     transform: rotateZ(4deg);
   }
 
+  .preview-album {
+    transition: all .5s ease-in-out;
+    overflow: hidden;
+
+    .card {
+      opacity: 0;
+      cursor: pointer;
+    }
+  }
 }

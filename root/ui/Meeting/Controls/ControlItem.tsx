@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import GIcon from "@/root/ui/components/Icons";
 import Tooltip from "@/root/ui/components/material-design/Tooltip";
 import {CEvent, ControlItemProps} from "@/root/ui/Meeting/Controls/Controls";
@@ -6,36 +6,38 @@ import {CEvent, ControlItemProps} from "@/root/ui/Meeting/Controls/Controls";
 
 const ControlItem: React.FC<ControlItemProps<boolean> &
     React.HTMLAttributes<HTMLElement>> =
-    React.memo(({
-                    icon,
-                    isActive = false,
-                    extra,
-                    onAction,
-                    colors,
-                    className,
-                    onToggle,
-                    design,
-                    tooltip,
-                    options,
-                    ...rest
-                }) => {
+    React.memo(function ControlItem({
+                                        icon,
+                                        isActive = false,
+                                        extra,
+                                        onAction,
+                                        colors,
+                                        className,
+                                        onToggle,
+                                        design,
+                                        tooltip,
+                                        options,
+                                        ...rest
+                                    }) {
         const [inActiveState, setInActiveState] = useState(isActive);
 
         const [icon1, icon2] = icon.split("|");
         const [vIcon, setIcon] = useState(icon1);
-        let def = true;
+        const def = useRef(true);
 
         const toggleState = useCallback(() => {
             setInActiveState(prevState => !prevState);
             icon2 &&
             setIcon(prev => prev == icon1 ? icon2 : icon1)
-        }, []);
-        const cEvent: CEvent<boolean> = {
-            preventDefault: () => (def = false),
-            data: () => inActiveState,
-            active: (state) => typeof state === "undefined" ? inActiveState : setInActiveState(state),
-            icon: (name) => setIcon(name),
-        };
+        }, [icon1, icon2]);
+        const cEvent: CEvent<boolean> = useMemo(() => (
+            {
+                preventDefault: () => (def.current = false),
+                data: () => inActiveState,
+                active: (state) => typeof state === "undefined" ? inActiveState : setInActiveState(state),
+                icon: (name) => setIcon(name),
+            }
+        ), [inActiveState]);
 
         const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
             e.preventDefault();
@@ -45,16 +47,16 @@ const ControlItem: React.FC<ControlItemProps<boolean> &
                 onAction(cEvent);
             }
 
-            if (def) {
+            if (def.current) {
                 toggleState();
                 if (onToggle) {
                     onToggle(cEvent);
                 }
             }
-        }, [onAction, onToggle, inActiveState, toggleState]);
+        }, [onAction, def, cEvent, toggleState, onToggle]);
 
         const [activeColor, inActiveColor] = (states => {
-                let st = states.split("|", 2);
+                const st = states.split("|", 2);
                 return st.length > 1 ? st : [st[0], "bg-[#333537]"]
             }
         )(colors || "bg-transparent")
@@ -62,7 +64,7 @@ const ControlItem: React.FC<ControlItemProps<boolean> &
 
         useEffect(() => {
             setBgColor(() => inActiveState ? activeColor : inActiveColor)
-        }, [inActiveState]);
+        }, [activeColor, inActiveColor, inActiveState]);
 
         const extractTextColor = (classStr: string) => {
             const match = classStr.match(/text-([a-zA-Z0-9]+)/);
@@ -71,7 +73,7 @@ const ControlItem: React.FC<ControlItemProps<boolean> &
 
 
         const textColor = extractTextColor(bgColor);
-        let Cont = () => {
+        const Cont = () => {
 
             const [ddVisible, setDdVisible] = useState(false)
             const [ddShown, setDdShown] = useState(false)
@@ -87,17 +89,17 @@ const ControlItem: React.FC<ControlItemProps<boolean> &
                 }
             }
             const ref = useRef<HTMLDivElement | null>(null);
-            const handleClickOutside = (event: MouseEvent) => {
+            const handleClickOutside = useCallback((event: MouseEvent) => {
                 if (ref.current && !ref.current.contains(event.target as Node)) {
                     handleDropdown(false)
                 }
-            };
+            }, []);
             useEffect(() => {
                 document.addEventListener("click", handleClickOutside);
                 return () => {
                     document.removeEventListener("click", handleClickOutside);
                 };
-            }, []);
+            }, [handleClickOutside]);
 
             return <>
                 <div className="cursor-pointer flex p-0 rounded-full">
@@ -110,7 +112,7 @@ const ControlItem: React.FC<ControlItemProps<boolean> &
                         ref={ref}
                         className={`${extra ? "rounded-r-full" : "rounded-full"} p-3 ${bgColor} ${className}  transition-all duration-150`}
                         onClick={(e) => {
-                            if (!options) return  handleClick(e)
+                            if (!options) return handleClick(e)
                             dShowRef.current && clearTimeout(dShowRef.current)
                             handleDropdown(!ddVisible)
                         }}
@@ -135,7 +137,7 @@ const ControlItem: React.FC<ControlItemProps<boolean> &
         }
         return (
             tooltip ? (() => {
-                    let [title, pos] = tooltip.split("|")
+                    const [title, pos] = tooltip.split("|")
                     return <Tooltip text={title.trim()}
                                     position={(pos?.trim() ?? "top") as "top" | "bottom" | "left" | "right"}
                                     open={false}>
