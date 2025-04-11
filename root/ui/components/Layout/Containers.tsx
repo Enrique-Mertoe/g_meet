@@ -32,42 +32,42 @@ const EndScreen: React.FC<{
     listener: (event: PSEvent) => void
 
 }> = React.memo(function EndScreen({listener}) {
-
-    const videoRef = useRef<HTMLVideoElement>(null);
-    const eventHandlers: Record<string, Closure[]> = useMemo(() => ({}), []);
-    const ev = useMemo(() => {
-        return {
-            on: (action: string, handler: Closure) => {
-                if (!eventHandlers[action]) {
-                    eventHandlers[action] = [];
-                }
-                eventHandlers[action].push(handler);
-            },
-            trigger(action: string, ...args: unknown[]): void {
-                eventHandlers[action]?.forEach(handler => handler(...args));
-            }
-        }
-    }, [eventHandlers])
-
-    const handleScreenShare = useCallback((stream: MediaStream | null) => {
-        ev.trigger("action", stream ? "open" : "close");
-
-        if (videoRef.current) {
-            if (stream && stream instanceof MediaStream) {
-                videoRef.current.srcObject = stream;
-                videoRef.current.play().then(r => null);
-            } else {
-                videoRef.current.srcObject = null;
-            }
-        }
-    }, [ev]);
-    useEffect(() => {
-        listener(ev);
-        SignalBox.on("screenShare", handleScreenShare);
-        return () => {
-            SignalBox.off("screenShare", handleScreenShare);
-        };
-    }, [ev, handleScreenShare, listener]);
+    //
+    // const videoRef = useRef<HTMLVideoElement>(null);
+    // const eventHandlers: Record<string, Closure[]> = useMemo(() => ({}), []);
+    // const ev = useMemo(() => {
+    //     return {
+    //         on: (action: string, handler: Closure) => {
+    //             if (!eventHandlers[action]) {
+    //                 eventHandlers[action] = [];
+    //             }
+    //             eventHandlers[action].push(handler);
+    //         },
+    //         trigger(action: string, ...args: unknown[]): void {
+    //             eventHandlers[action]?.forEach(handler => handler(...args));
+    //         }
+    //     }
+    // }, [eventHandlers])
+    //
+    // const handleScreenShare = useCallback((stream: MediaStream | null) => {
+    //     ev.trigger("action", stream ? "open" : "close");
+    //
+    //     if (videoRef.current) {
+    //         if (stream && stream instanceof MediaStream) {
+    //             videoRef.current.srcObject = stream;
+    //             videoRef.current.play().then(r => null);
+    //         } else {
+    //             videoRef.current.srcObject = null;
+    //         }
+    //     }
+    // }, [ev]);
+    // useEffect(() => {
+    //     listener(ev);
+    //     SignalBox.on("screenShare", handleScreenShare);
+    //     return () => {
+    //         SignalBox.off("screenShare", handleScreenShare);
+    //     };
+    // }, [ev, handleScreenShare, listener]);
 
 
     return (
@@ -105,7 +105,7 @@ const EndScreen: React.FC<{
                     </div>
                 </div>
 
-                <video ref={videoRef} autoPlay playsInline className="w-full rounded-inherit bg-dark h-full"></video>
+                {/*<video ref={videoRef} autoPlay playsInline className="w-full rounded-inherit bg-dark h-full"></video>*/}
             </div>
         </>
     )

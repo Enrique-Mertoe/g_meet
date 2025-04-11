@@ -7,9 +7,11 @@ import TimeDisplay from "@/root/ui/Meeting/Controls/TimeDisplay";
 import DView from "@/root/ui/Meeting/Controls/DView";
 import ControlItem from "@/root/ui/Meeting/Controls/ControlItem";
 import {ControlParams} from "@/root/ui/Meeting/Controls/Controls";
+import {useFilePicker} from "@/root/hooks/useFilePicker";
 
 
-const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
+const GControl: React.FC<ControlParams> = React.memo(function GControl({mute}) {
+    const picker = useFilePicker()
     const [isSharing, setIsSharing] = useState(false);
     const callback = useRef<(state: boolean) => void>(null);
 
@@ -92,7 +94,9 @@ const GControl: React.FC<ControlParams> = React.memo(({mute}) => {
                                 if (ref == "screen")
                                     toggleScreenShare((state) => e.active(state)).then();
                                 else {
-                                    SignalBox.trigger("docShare", true);
+                                    SignalBox.off("is-presenting")
+                                    picker.pick(files => SignalBox.trigger("docShare", files));
+                                    SignalBox.on("is-presenting", state => e.active(state))
                                 }
                             }
                         }}

@@ -32,14 +32,12 @@ import {
     ArrowRight,
     UserRoundPlus,
     Search,
-    LayoutDashboard, Monitor, FileText, CloudUpload, Check, Upload, BadgeInfo
+    LayoutDashboard, Monitor, FileText, CloudUpload, Check, Upload, BadgeInfo, LucideProps
 
 } from "lucide-react";
 import React, {forwardRef} from "react";
 
-import {Lock, User} from "lucide-react";
-
-const LockPerson: LucideIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(
+const LockPerson: LucideIcon = forwardRef<SVGSVGElement, LucideProps>(
     (props, ref) => (
         <svg ref={ref} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="24"
              width="24" {...props}>
@@ -53,14 +51,18 @@ const LockPerson: LucideIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGEl
 LockPerson.displayName = "LockPerson";
 
 
-const GLoader: LucideIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(function GLoader(
+const GLoader: LucideIcon = forwardRef<SVGSVGElement, LucideProps>(function GLoader(
     props, ref
 ) {
-    let [c1, c2] = (props.color ?? "").split("|");
-    c1 = c1 ? c1 : "fill-amber-400";
+    const { size = 24, className, ...rest } = props;
+    let c1: string = "";
+    let c2: string;
+    [c1, c2] = (className ?? "fill-amber-400").split("|", 2);
     c2 = c2 ? c2 : "fill-gray-100";
     return (
-        <svg ref={ref} width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <svg ref={ref} width={props.size ?? "24"} height={props.size ?? "24"} viewBox="0 0 24 24"
+             {...rest}
+             xmlns="http://www.w3.org/2000/svg">
             <rect className={`spinner_jCIR ${c1}`} x="1" y="6" width="2.8" height="12"/>
             <rect className={`spinner_jCIR spinner_upm8 ${c2}`} x="5.8" y="6" width="2.8" height="12"/>
             <rect className={`spinner_jCIR ${c1} spinner_2eL5`} x="10.6" y="6" width="2.8" height="12"/>

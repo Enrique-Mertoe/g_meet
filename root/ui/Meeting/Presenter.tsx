@@ -1,12 +1,24 @@
 "use client";
-import React, {useEffect, useRef} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {acc} from "@/root/manage/useUserManager";
 import {useScreen} from "@/root/context/providers/ScreenProvider";
+import GIcon from "@/root/ui/components/Icons";
+import SignalBox from "@/root/manage/SignalBox";
+import {toBlob} from "@/root/utility";
+import {Dict} from "@/root/GTypes";
 
+export type PresentFileSrc = {
+    type: "img" | "vid" | "doc";
+    info: string | unknown;
+    loaded: boolean
+}
 const Presenter: React.FC = () => {
     const screen = useScreen();
     const containerRef = useRef<HTMLDivElement>(null);
-    const handleScroll = () => {
+    const [loading, setLoading] = useState(true)
+    const [fileSrc, setFileSrc] = useState<PresentFileSrc | null>(null)
+
+    const handleScroll = useCallback(() => {
         const scrollPercent =
             (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
         screen?.sendInfo({
@@ -18,9 +30,9 @@ const Presenter: React.FC = () => {
             }
         })
         // ws.send({ event: "scroll",  });
-    };
+    }, [screen]);
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = useCallback((e: MouseEvent) => {
         if (!containerRef.current) return;
 
         const rect = containerRef.current.getBoundingClientRect();
@@ -43,7 +55,7 @@ const Presenter: React.FC = () => {
                 },
             });
         }
-    };
+    }, [screen]);
 
     useEffect(() => {
         window.addEventListener("scroll", handleScroll);
@@ -52,9 +64,58 @@ const Presenter: React.FC = () => {
             window.removeEventListener("scroll", handleScroll);
             window.removeEventListener("mousemove", handleMouseMove);
         };
-    }, []);
+    }, [handleMouseMove, handleScroll]);
+    const types: Dict<PresentFileSrc["type"]> = useMemo(() => ({
+        "image/png": "img"
+    }), [])
 
-    return <div ref={containerRef} className="size-full rounded overflow-auto bg-gray-100">Presenting...</div>;
+    useEffect(() => {
+        SignalBox.on("present-file", file => {
+            setFileSrc(() => {
+                const f: PresentFileSrc = {
+                    type: types[file.type as string],
+                    info: file.data, loaded: false
+                }
+                return f
+            })
+        });
+        return () => {
+            SignalBox.off("present-file");
+        }
+    }, [types]);
+
+    function hLoad() {
+        setLoading(false)
+    }
+
+    return (
+        <>
+            <div ref={containerRef} className="size-full bg-[rgb(60_64_67)] p-[1px] rounded relative">
+                <div className="flex size-full justify-center items-center">
+                    {
+                        fileSrc?.type == "img" &&
+                        <img
+                            className={"max-w-full"}
+                            src={toBlob(fileSrc.info as ArrayBuffer)}
+                            onLoad={() => hLoad()}
+                        />}
+                </div>
+
+                {
+                    loading &&
+                    <div className="absolute inset-0">
+                        <div className="flex size-full justify-center items-center"
+                             style={{background: "rgba(255,255,255,.3)"}}
+                        >
+                            <GIcon name={"g-loader"} color={"fill-blue-400"} size={104}/>
+                        </div>
+
+                    </div>
+
+                }
+            </div>
+        </>
+    );
 };
 
 export default Presenter;
