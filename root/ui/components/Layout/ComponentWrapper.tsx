@@ -179,7 +179,7 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
     };
 
     useUserManager()
-    const [isOpen,] = useState(true);
+    const [isOpen,] = useState(false);
     // const [, setIsvisible] = useState(isOpen);
     // const [act, setAct] = useState(false);
     const [itemsPerRow, setItemsPerRow] = useState(3);
