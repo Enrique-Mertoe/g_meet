@@ -4,7 +4,7 @@ import UserGrid from "@/root/ui/Meeting/UserGrid";
 import DetailScreen from "@/root/ui/Meeting/DetailWindow/DetailScreen";
 import GControl from "@/root/ui/Meeting/Controls/GControl";
 import PresentationDisplay, {PSEvent} from "@/root/ui/Meeting/PresentationDisplay";
-import {useUserManager} from "@/root/manage/useUserManager";
+import {acc, useUserManager} from "@/root/manage/useUserManager";
 import DScreenContext from "@/root/context/DScreenContext";
 import {useFilePicker} from "@/root/hooks/useFilePicker";
 import {useMeetingSocket} from "@/root/hooks/useMeetingSocket";
@@ -34,6 +34,7 @@ interface MainContentProps {
 const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }) => {
     const [participants, setParticipants] = useState<any[]>([]);
     const [meeting, setMeeting] = useState<any>(null);
+    const [presentingUserId, setPresentingUserId] = useState<string | null>(null);
 
     // Fetch meeting data and participants
     const fetchMeetingData = useCallback(async () => {
@@ -66,12 +67,29 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
                         isSpeaking: false,
                         micOn: !p.isMuted,
                         videoOn: !p.isVideoOff,
-                        role: p.role || 'participant'
+                        role: p.role || 'participant',
+                        isPresenting: p.isPresenting || false
                     };
                 });
 
                 console.log('Processed participants:', participantsList);
                 setParticipants(participantsList);
+
+                // Update account type based on user's role in the meeting
+                if (userId) {
+                    const currentUserParticipant = participantsList.find(p => p.uid === userId);
+                    if (currentUserParticipant) {
+                        const userRole = currentUserParticipant.role;
+                        console.log('Current user role in meeting:', userRole);
+
+                        // Set account type based on role
+                        if (userRole === 'host') {
+                            acc.account('host');
+                        } else {
+                            acc.account('guest');
+                        }
+                    }
+                }
             }
         } catch (error) {
             console.error('Error fetching meeting data:', error);
@@ -91,15 +109,27 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
                 const exists = prev.find(p => p.uid === data.userId);
                 if (exists) return prev;
 
-                return [...prev, {
+                const newParticipant = {
                     uid: data.userId,
                     name: data.userName || 'New User',
                     avatar: "/avatar.jpg",
                     isSpeaking: false,
                     micOn: true,
                     videoOn: true,
-                    role: 'participant'
-                }];
+                    role: data.role || 'participant'
+                };
+
+                // Update account type if this is the current user
+                if (userId === data.userId) {
+                    console.log('Current user joined with role:', newParticipant.role);
+                    if (newParticipant.role === 'host') {
+                        acc.account('host');
+                    } else {
+                        acc.account('guest');
+                    }
+                }
+
+                return [...prev, newParticipant];
             });
         },
         onUserLeft: (data) => {
@@ -115,6 +145,11 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
                     ? { ...p, ...data.status }
                     : p
             ));
+            
+            // Update presenting state
+            if (data.status?.isPresenting !== undefined) {
+                setPresentingUserId(data.status.isPresenting ? data.userId : null);
+            }
         },
     });
 
@@ -168,10 +203,10 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
         }
     }, [meetingId, userId, userName, joinMeeting, leaveMeeting, fetchMeetingData]);
 
-    // const p = useFilePicker()
-    // useEffect(() => {
-    //     p.pick(file => {})
-    // }, []);
+    const p = useFilePicker()
+    useEffect(() => {
+        p.pick(file => {})
+    }, []);
 
     const presentationDetails = {
         title: "Live Presentation",
@@ -179,9 +214,9 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
     };
 
     useUserManager()
-    const [isOpen,] = useState(false);
-    // const [, setIsvisible] = useState(isOpen);
-    // const [act, setAct] = useState(false);
+    const [isOpen,setIsOpen] = useState(false);
+    const [, setIsvisible] = useState(isOpen);
+    const [act, setAct] = useState(false);
     const [itemsPerRow, setItemsPerRow] = useState(3);
     const [rows, setRows] = useState(3);
     const [, setShowMore] = useState(false);
@@ -192,25 +227,24 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
     const containerRef = useRef<HTMLDivElement | null>(null);
 
 
-    // const open = () => {
-    //     setIsvisible(true)
-    //     setTimeout(() => setIsOpen(true), 50);
-    //     // setScreenItems(2);
-    // }
-    // const close = () => {
-    //     setIsOpen(prev => {
-    //         if (!prev) return prev;
-    //         // setScreenItems(3);
-    //         setIsOpen(false)
-    //         setTimeout(() => setIsvisible(false), 300);
-    //         return false;
-    //     });
-    // }
+    const open = () => {
+        setIsvisible(true)
+        setTimeout(() => setIsOpen(true), 50);
+        // setScreenItems(2);
+    }
+    const close = () => {
+        setIsOpen(prev => {
+            if (!prev) return prev;
+            // setScreenItems(3);
+            setIsOpen(false)
+            setTimeout(() => setIsvisible(false), 300);
+            return false;
+        });
+    }
     const event = useCallback((val: string) => {
-        console.log(val)
-        setTimeout(() => {
-            // val == "open" ? open() : close();
-        }, 50)
+        // setTimeout(() => {
+            val == "open" ? open() : close();
+        // }, 50)
     }, []);
 
     // const adjust = (items: number) => {
@@ -397,7 +431,7 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
                         </div>
 
                         <div className={"h-full grow bg-gray-400"}>
-                            <UserGrid items={participants} presentationDetails={presentationDetails}/>
+                            <UserGrid presenting={isOpen} items={participants} presentationDetails={presentationDetails}/>
                         </div>
 
                         {/* Sidebar */}
@@ -447,4 +481,3 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
     )
 };
 export {MainContent}
-

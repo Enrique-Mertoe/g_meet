@@ -6,9 +6,10 @@ import { UserInfo, PresentationInfo } from "@/root/fn";
 interface UserGridProps {
     items: UserInfo[];
     presentationDetails: PresentationInfo;
+    presenting: boolean;
 }
 
-const UserGrid: React.FC<UserGridProps> = ({ items, presentationDetails }) => {
+const UserGrid: React.FC<UserGridProps> = ({ items, presentationDetails,presenting }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [gridLayout, setGridLayout] = useState({ cols: 1, rows: 1, itemWidth: 0, itemHeight: 0 });
     const [ready, setReady] = useState(false);
@@ -50,7 +51,7 @@ const UserGrid: React.FC<UserGridProps> = ({ items, presentationDetails }) => {
     useEffect(() => {
         calculateGrid();
         setReady(true);
-    }, [items]);
+    }, [items,presenting]);
 
     useEffect(() => {
         const handleResize = () => calculateGrid();

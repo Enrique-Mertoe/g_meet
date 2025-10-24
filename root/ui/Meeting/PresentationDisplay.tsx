@@ -18,11 +18,10 @@ export interface PSEvent {
 }
 
 const PScreen: React.FC<{
-
-    presenting?: boolean;
+    participants?: any[];
+    currentUserId?: string;
     listener: (event: PSEvent) => void
-
-}> = React.memo(function PScreen({presenting, listener}) {
+}> = React.memo(function PScreen({participants = [], currentUserId, listener}) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const account = useAccount();
     const eventHandlers: Record<string, Closure[]> = useMemo(() => ({}), []);
@@ -83,7 +82,9 @@ const PScreen: React.FC<{
                         <div className="hstack">
                             <div className="rounded-sm w-full max-w-[80%] mx-auto px-3 py-1 bg-[rgb(60_64_67)]">
                                 <div className="hstack gap-1">
-                                    <span className={"text-white font-bold"}>Abuti Martin</span>
+                                    <span className={"text-white font-bold"}>
+                                        {participants.find(p => p.isPresenting)?.name || 'Someone'}
+                                    </span>
                                     <span className={"text-white font-bold"}> is presenting</span>
 
                                     <div className="ms-auto hstack gap-2">
@@ -122,7 +123,7 @@ const PScreen: React.FC<{
                     <div className="flex-1">
                         <ScreenProvider>
                             {
-                                account.account() == "host" ?
+                                participants.find(p => p.uid === currentUserId)?.isPresenting ?
                                     <Presenter/>
                                     :
                                     <Viewer/>

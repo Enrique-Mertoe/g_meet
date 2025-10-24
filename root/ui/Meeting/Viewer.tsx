@@ -52,9 +52,11 @@ const Viewer: React.FC = () => {
     }, [screen]);
 
     return (
-        <div ref={containerRef} className="relative w-full overflow-auto bg-white">
-            <div ref={cursorRef} className="absolute h-2 w-2 bg-red-500 rounded-full opacity-75"></div>
-            Viewing... as {user.accountType}
+        <div ref={containerRef} className="relative w-full h-full overflow-auto bg-gray-100">
+            <div ref={cursorRef} className="absolute h-2 w-2 bg-red-500 rounded-full opacity-75 pointer-events-none z-10"></div>
+            <div className="flex items-center justify-center h-full text-gray-600">
+                Waiting for presentation...
+            </div>
         </div>
     );
 };
