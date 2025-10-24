@@ -32,6 +32,52 @@ interface MainContentProps {
 }
 
 const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }) => {
+    const [participants, setParticipants] = useState<any[]>([]);
+    const [meeting, setMeeting] = useState<any>(null);
+
+    // Fetch meeting data and participants
+    const fetchMeetingData = useCallback(async () => {
+        if (!meetingId) return;
+
+        try {
+            const response = await fetch(`/api/meeting?type=get&meetingId=${meetingId}`);
+            const data = await response.json();
+
+            if (data.ok && data.data) {
+                setMeeting(data.data);
+                console.log('Meeting data received:', data.data);
+                console.log('Raw participants:', data.data.participants);
+
+                // Convert participants to UserInfo format
+                // Filter out participants who have left (leftAt is set)
+                const activeParticipants = data.data.participants?.filter((p: any) => !p.leftAt) || [];
+
+                const participantsList = activeParticipants.map((p: any, index: number) => {
+                    // p.userId is the populated user object from backend
+                    const user = p.userId;
+                    const userName = user?.firstName
+                        ? `${user.firstName} ${user.lastName || ''}`.trim()
+                        : user?.fullName || `User ${index + 1}`;
+
+                    return {
+                        uid: user?._id || user?.id || `user-${index}`,
+                        name: userName,
+                        avatar: user?.profileUrl || "/avatar.jpg",
+                        isSpeaking: false,
+                        micOn: !p.isMuted,
+                        videoOn: !p.isVideoOff,
+                        role: p.role || 'participant'
+                    };
+                });
+
+                console.log('Processed participants:', participantsList);
+                setParticipants(participantsList);
+            }
+        } catch (error) {
+            console.error('Error fetching meeting data:', error);
+        }
+    }, [meetingId]);
+
     // WebSocket meeting integration
     const { joinMeeting, leaveMeeting } = useMeetingSocket({
         meetingId,
@@ -39,13 +85,43 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
         userName,
         onUserJoined: (data) => {
             console.log('User joined:', data);
-            // TODO: Update participants list
+            // Add new participant to the list
+            setParticipants(prev => {
+                // Check if user already exists
+                const exists = prev.find(p => p.uid === data.userId);
+                if (exists) return prev;
+
+                return [...prev, {
+                    uid: data.userId,
+                    name: data.userName || 'New User',
+                    avatar: "/avatar.jpg",
+                    isSpeaking: false,
+                    micOn: true,
+                    videoOn: true,
+                    role: 'participant'
+                }];
+            });
         },
         onUserLeft: (data) => {
             console.log('User left:', data);
-            // TODO: Update participants list
+            // Remove participant from the list
+            setParticipants(prev => prev.filter(p => p.uid !== data.userId));
+        },
+        onParticipantStatusChanged: (data) => {
+            console.log('Participant status changed:', data);
+            // Update participant status
+            setParticipants(prev => prev.map(p =>
+                p.uid === data.userId
+                    ? { ...p, ...data.status }
+                    : p
+            ));
         },
     });
+
+    // Fetch meeting data on mount
+    useEffect(() => {
+        fetchMeetingData();
+    }, [fetchMeetingData]);
 
     // Join meeting via API and WebSocket when component mounts
     useEffect(() => {
@@ -65,7 +141,15 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
                     const data = await response.json();
                     if (data.ok) {
                         console.log('Successfully joined meeting via API:', meetingId);
+                        // Fetch updated meeting data with new participant
+                        await fetchMeetingData();
                         // Join WebSocket room
+                        joinMeeting();
+                    } else if (data.error === 'You are already in this meeting') {
+                        // User is already in the meeting (page refresh case)
+                        // Just fetch the current data and join WebSocket
+                        console.log('Already in meeting, rejoining WebSocket:', meetingId);
+                        await fetchMeetingData();
                         joinMeeting();
                     } else {
                         console.error('Failed to join meeting:', data.error);
@@ -75,111 +159,28 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
                 }
             };
 
-            joinMeetingAPI();
+            void joinMeetingAPI();
 
             // Cleanup: Leave meeting when component unmounts
             return () => {
                 leaveMeeting();
             };
         }
-    }, [meetingId, userId, userName, joinMeeting, leaveMeeting]);
+    }, [meetingId, userId, userName, joinMeeting, leaveMeeting, fetchMeetingData]);
 
     // const p = useFilePicker()
     // useEffect(() => {
     //     p.pick(file => {})
     // }, []);
-    const userDetails = [
-            {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            }, {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            }, {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            }, {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            }, {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            }, {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            },
-            {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            }, {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            }, {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            },
-            {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            }, {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            }, {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            }, {
-                uid: "c",
-                name: "John Doe",
-                avatar: "/avatar.jpg",
-                isSpeaking: true,
-                micOn: false
-            }
-        ],
-        presentationDetails = {
-            title: "Live Presentation",
-            content: (<iframe src="https://example.com/presentation" className="w-full h-full"/>)
-        };
+
+    const presentationDetails = {
+        title: "Live Presentation",
+        content: (<iframe src="https://example.com/presentation" className="w-full h-full"/>)
+    };
 
     useUserManager()
     const [isOpen,] = useState(true);
     // const [, setIsvisible] = useState(isOpen);
-    const [screenItems,] = useState(userDetails);
     // const [act, setAct] = useState(false);
     const [itemsPerRow, setItemsPerRow] = useState(3);
     const [rows, setRows] = useState(3);
@@ -268,10 +269,10 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
             setRows(calculatedRows);
 
             // Determine the number of items to display
-            const itemsToShow = screenItems.slice(0, newItemsPerRow * calculatedRows);
-            setShowMore(screenItems.length > itemsToShow.length);
+            const itemsToShow = participants.slice(0, newItemsPerRow * calculatedRows);
+            setShowMore(participants.length > itemsToShow.length);
         }
-    }, [screenItems]);
+    }, [participants]);
 
     useEffect(() => {
         handleResize()
@@ -288,7 +289,7 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
             observer.unobserve(containerRef.current);
 
         };
-    }, [screenItems, itemsPerRow, rows, handleResize]);
+    }, [participants, itemsPerRow, rows, handleResize]);
 
 
     const screenRef = useRef<HTMLDivElement | null>(null);
@@ -396,7 +397,7 @@ const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }
                         </div>
 
                         <div className={"h-full grow bg-gray-400"}>
-                            <UserGrid items={userDetails} presentationDetails={presentationDetails}/>
+                            <UserGrid items={participants} presentationDetails={presentationDetails}/>
                         </div>
 
                         {/* Sidebar */}
