@@ -1,12 +1,15 @@
 "use client"
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Image from "next/image";
 import loginBg from "@/public/loginbg.svg"
 import GIcon from "@/root/ui/components/Icons";
 import {useSignIn} from "@/root/hooks/useSignIn";
+import {useRouter, useSearchParams} from "next/navigation";
 
 const SignInPage: React.FC = () => {
     const su = useSignIn()
+    const router = useRouter()
+    const searchParams = useSearchParams()
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -18,6 +21,7 @@ const SignInPage: React.FC = () => {
         setLoading(true)
         if (!email || !password) {
             setErrorMessage('Please fill out all fields.');
+            setLoading(false)
             return
         }
         const res = await su.signIn({email, password});
@@ -25,7 +29,13 @@ const SignInPage: React.FC = () => {
         setErrorMessage(prev => res.error ? res.error : prev)
         console.log(res)
         if (res.ok){
-            alert()
+            // Check if there's a redirect parameter
+            const redirect = searchParams.get('redirect')
+            if (redirect) {
+                router.push(redirect)
+            } else {
+                router.push('/')
+            }
         }
 
     };

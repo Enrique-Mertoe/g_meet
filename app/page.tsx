@@ -3,6 +3,7 @@ import {Suspense} from "react";
 import AppContext from "@/root/context/AppContext";
 import session from "@/root/lib/Session";
 import {redirect} from "next/navigation";
+import DashBoard from "@/root/ui/components/dashboard/dashboard";
 
 export default async function Home() {
     if (!await session("user"))
@@ -14,7 +15,7 @@ export default async function Home() {
                 <main className={"h-full w-full"}>
                     <ComponentWrapper>
                         <Suspense>
-                            <MainContent/>
+                            <DashBoard/>
                         </Suspense>
                     </ComponentWrapper>
 

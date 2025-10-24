@@ -7,6 +7,7 @@ import PresentationDisplay, {PSEvent} from "@/root/ui/Meeting/PresentationDispla
 import {useUserManager} from "@/root/manage/useUserManager";
 import DScreenContext from "@/root/context/DScreenContext";
 import {useFilePicker} from "@/root/hooks/useFilePicker";
+import {useMeetingSocket} from "@/root/hooks/useMeetingSocket";
 // import {useWebSocket, WebSocketProvider} from "@/root/context/WebSocketContext";
 
 const ComponentWrapper: React.FC<{ children: React.ReactNode }> = ({children}) => {
@@ -24,7 +25,65 @@ const ComponentWrapper: React.FC<{ children: React.ReactNode }> = ({children}) =
 
 export default ComponentWrapper;
 
-const MainContent: React.FC = ({}) => {
+interface MainContentProps {
+    meetingId?: string;
+    userId?: string;
+    userName?: string;
+}
+
+const MainContent: React.FC<MainContentProps> = ({ meetingId, userId, userName }) => {
+    // WebSocket meeting integration
+    const { joinMeeting, leaveMeeting } = useMeetingSocket({
+        meetingId,
+        userId,
+        userName,
+        onUserJoined: (data) => {
+            console.log('User joined:', data);
+            // TODO: Update participants list
+        },
+        onUserLeft: (data) => {
+            console.log('User left:', data);
+            // TODO: Update participants list
+        },
+    });
+
+    // Join meeting via API and WebSocket when component mounts
+    useEffect(() => {
+        if (meetingId && userId && userName) {
+            // Join meeting via API
+            const joinMeetingAPI = async () => {
+                try {
+                    const response = await fetch('/api/meeting', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'join',
+                            meetingId,
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.ok) {
+                        console.log('Successfully joined meeting via API:', meetingId);
+                        // Join WebSocket room
+                        joinMeeting();
+                    } else {
+                        console.error('Failed to join meeting:', data.error);
+                    }
+                } catch (error) {
+                    console.error('Error joining meeting:', error);
+                }
+            };
+
+            joinMeetingAPI();
+
+            // Cleanup: Leave meeting when component unmounts
+            return () => {
+                leaveMeeting();
+            };
+        }
+    }, [meetingId, userId, userName, joinMeeting, leaveMeeting]);
+
     // const p = useFilePicker()
     // useEffect(() => {
     //     p.pick(file => {})

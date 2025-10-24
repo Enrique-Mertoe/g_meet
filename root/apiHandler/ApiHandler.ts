@@ -6,7 +6,14 @@ import {
     AuthType, ISession,
     SignInInfo,
     TResponseInfo,
-    UserData
+    UserData,
+    MeetingType,
+    MeetingData,
+    CreateMeetingData,
+    ScheduleMeetingData,
+    JoinMeetingData,
+    MeetingActionData,
+    GetMeetingsData
 } from "@/root/apiHandler/index";
 import {cookies, headers} from "next/headers";
 import {NextRequest} from "next/server";
@@ -176,8 +183,104 @@ const ApiSession = (): ApiSessionMixin => {
         }
     }
 }
+const ApiMeeting = (): MeetingType => {
+    return {
+        async "create-instant"(data: CreateMeetingData): Promise<TResponseInfo<MeetingData>> {
+            return await TransportRule<MeetingData>({
+                url: 'http://localhost:3500/api/meeting',
+                carrier: {
+                    event: "meeting",
+                    action: "create-instant",
+                    data
+                }
+            }).make();
+        },
+        async schedule(data: ScheduleMeetingData): Promise<TResponseInfo<MeetingData>> {
+            return await TransportRule<MeetingData>({
+                url: 'http://localhost:3500/api/meeting',
+                carrier: {
+                    event: "meeting",
+                    action: "schedule",
+                    data
+                }
+            }).make();
+        },
+        async get(data: { meetingId: string }): Promise<TResponseInfo<MeetingData>> {
+            return await TransportRule<MeetingData>({
+                url: 'http://localhost:3500/api/meeting',
+                carrier: {
+                    event: "meeting",
+                    action: "get",
+                    data
+                }
+            }).make();
+        },
+        async join(data: JoinMeetingData): Promise<TResponseInfo<MeetingData>> {
+            return await TransportRule<MeetingData>({
+                url: 'http://localhost:3500/api/meeting',
+                carrier: {
+                    event: "meeting",
+                    action: "join",
+                    data
+                }
+            }).make();
+        },
+        async leave(data: MeetingActionData): Promise<TResponseInfo<any>> {
+            return await TransportRule<any>({
+                url: 'http://localhost:3500/api/meeting',
+                carrier: {
+                    event: "meeting",
+                    action: "leave",
+                    data
+                }
+            }).make();
+        },
+        async end(data: MeetingActionData): Promise<TResponseInfo<any>> {
+            return await TransportRule<any>({
+                url: 'http://localhost:3500/api/meeting',
+                carrier: {
+                    event: "meeting",
+                    action: "end",
+                    data
+                }
+            }).make();
+        },
+        async upcoming(data: GetMeetingsData): Promise<TResponseInfo<MeetingData[]>> {
+            return await TransportRule<MeetingData[]>({
+                url: 'http://localhost:3500/api/meeting',
+                carrier: {
+                    event: "meeting",
+                    action: "upcoming",
+                    data
+                }
+            }).make();
+        },
+        async recent(data: GetMeetingsData): Promise<TResponseInfo<MeetingData[]>> {
+            return await TransportRule<MeetingData[]>({
+                url: 'http://localhost:3500/api/meeting',
+                carrier: {
+                    event: "meeting",
+                    action: "recent",
+                    data
+                }
+            }).make();
+        },
+        async active(data: GetMeetingsData): Promise<TResponseInfo<MeetingData[]>> {
+            return await TransportRule<MeetingData[]>({
+                url: 'http://localhost:3500/api/meeting',
+                carrier: {
+                    event: "meeting",
+                    action: "active",
+                    data
+                }
+            }).make();
+        }
+    };
+};
+
 export const api = {
     auth: () => ApiAuth(),
     app: ApiAppProvider(),
-    session: ApiSession()
+    session: ApiSession(),
+    meeting: () => ApiMeeting()
 }

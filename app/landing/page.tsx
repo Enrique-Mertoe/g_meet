@@ -1,6 +1,27 @@
+"use client";
+
 import Footer from "@/root/ui/landing/Footer";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+    const router = useRouter();
+    const [classCode, setClassCode] = useState("");
+
+    const handleJoinClass = () => {
+        if (classCode && classCode.trim()) {
+            router.push(`/meeting/${classCode.trim()}`);
+        } else {
+            alert("Please enter a class code");
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            handleJoinClass();
+        }
+    };
+
     return (
         <div className={"vstack"}>
             <div className="w-full min-h-screen">
@@ -59,23 +80,25 @@ export default function Page() {
                                                 <div
                                                     className="border border-blue-600 text-gray-100 px-2  border border-1 border-gray-100   rounded-sm  hover:text-white transition flex items-center"
                                                 >
-                                                    <input type="text"
-                                                           className={"px-6 py-2 outline-0 border-0 shadow-none"}
-                                                           placeholder={"Enter lecture code"}/>
+                                                    <input
+                                                        type="text"
+                                                        value={classCode}
+                                                        onChange={(e) => setClassCode(e.target.value)}
+                                                        onKeyDown={handleKeyDown}
+                                                        className={"px-6 py-2 outline-0 border-0 shadow-none bg-transparent text-white"}
+                                                        placeholder={"Enter lecture code"}
+                                                    />
                                                     <span className="ml-2">
                     <i className="bi-keyboard text-xl"></i>
                   </span>
                                                 </div>
                                             </div>
-                                            <a
-                                                href="offcanvasRight"
-                                                className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition"
-                                                data-bs-toggle="offcanvas"
-                                                data-bs-target="#offcanvasRight"
-                                                aria-controls="offcanvasRight"
+                                            <button
+                                                onClick={handleJoinClass}
+                                                className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition cursor-pointer"
                                             >
                                                 Join
-                                            </a>
+                                            </button>
                                         </div>
 
 

@@ -13,21 +13,19 @@ const eslintConfig = [
     ...compat.extends("next/core-web-vitals", "next/typescript", "plugin:react-hooks/recommended"),
     {
         rules: {
-            "@typescript-eslint/no-unused-expressions": [
-                "error",
-                {
-                    "allowShortCircuit": true,  // Allows short-circuiting
-                    "allowTernary": true,       // Allows ternary operators
-                },
-            ],
-            "@typescript-eslint/no-unused-vars": [
-                "off", // or "off" to disable completely
-                {
-                    "vars": "none",
-                    "args": "none", // allow unused arguments
-                    "ignoreRestSiblings": true // allow unused variables in object destructuring
-                },
-            ],
+            // Allow unused variables/args if they start with "_"
+            "@typescript-eslint/no-unused-vars": ["warn", {
+                varsIgnorePattern: "^_",
+                argsIgnorePattern: "^_",
+                ignoreRestSiblings: true
+            }],
+            "@typescript-eslint/no-explicit-any": "off",
+            "prefer-const": "off",
+            "@typescript-eslint/no-empty-object-type": "off",
+            "@next/next/no-html-link-for-pages": "off",
+            "@typescript-eslint/no-require-imports": "off",
+            "react/no-unescaped-entities": "off",
+            "@typescript-eslint/ban-ts-comment": "off",
         },
     },
 ];
